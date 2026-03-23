@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+}
+
+model Court {
+  id        String    @id @default(uuid())
+  name      String    // Ex: "Quadra 01 - Areia"
+  bookings  Booking[]
+}
+
+model Booking {
+  id        String   @id @default(uuid())
+  date      DateTime
+  startTime DateTime
+  endTime   DateTime
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  courtId   String
+  court     Court    @relation(fields: [courtId], references: [id])
+}
