@@ -23,7 +23,7 @@ export class AuhtController {
       }
 
       // Gera o JWT
-      const secret = process.env.JWT_SECRET;
+      const secret = process.env.JWT_SECRET as string;
       if (!secret) {
         throw new Error("A variavel JWT_SECRET nao esta definida no .env");
       }
