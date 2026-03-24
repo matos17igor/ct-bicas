@@ -21,7 +21,7 @@ export function Login() {
       });
 
       const { token } = response.data;
-      localStorage.setItem("@ArenaSaaS:token", token);
+      localStorage.setItem("@CTBicas:token", token);
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
@@ -35,9 +35,10 @@ export function Login() {
         <div className="text-center mb-10 flex flex-col items-center">
           <img
             src={logoCt}
-            alt="Logo CT BICAS"
+            alt="Logo CT Bicas"
             className="w-24 h-24 object-contain mb-5 drop-shadow-md"
           />
+
           <h2 className="mt-4 text-3xl font-extrabold text-slate-900 tracking-tight">
             CT BICAS
           </h2>
