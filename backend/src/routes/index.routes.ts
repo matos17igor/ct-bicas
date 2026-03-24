@@ -25,6 +25,7 @@ router.get("/courts", courtController.index);
 
 router.post("/bookings", authMiddleware, bookingController.create);
 router.get("/me/bookings", authMiddleware, bookingController.indexByUser);
+router.delete("/bookings/:id", authMiddleware, bookingController.delete);
 
 router.get("/courts/:courtId/bookings", bookingController.listByCourtAndDate);
 

@@ -115,4 +115,38 @@ export class BookingController {
       res.status(500).json({ error: "Erro ao procurar horários ocupados." });
     }
   };
+
+  delete = async (req: AuthRequest, res: Response) => {
+    try {
+      const id = req.params.id as string; // id do agendamento
+      const userId = req.userId as string;
+
+      const booking = await prisma.booking.findUnique({
+        where: { id },
+      });
+
+      if (!booking) {
+        return res.status(404).json({ error: "Agendamento nao encontrado" });
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (booking.userId !== userId && user?.role !== "ADMIN") {
+        return res.status(403).json({
+          error: "Voce nao tem permissao para cancelar esse agendamento",
+        });
+      }
+
+      await prisma.booking.delete({
+        where: { id },
+      });
+
+      res.status(204).send();
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Erro ao cancelar o agendamento" });
+    }
+  };
 }
