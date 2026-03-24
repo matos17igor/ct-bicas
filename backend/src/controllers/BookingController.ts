@@ -149,4 +149,26 @@ export class BookingController {
       res.status(500).json({ error: "Erro ao cancelar o agendamento" });
     }
   };
+
+  indexAll = async (req: Request, res: Response) => {
+    try {
+      const bookings = await prisma.booking.findMany({
+        include: {
+          court: true, // Traz os dados da quadra
+          user: {
+            select: {
+              name: true,
+              email: true, // Traz o contato do cliente
+            },
+          },
+        },
+        orderBy: [{ date: "asc" }, { startTime: "asc" }],
+      });
+
+      res.json(bookings);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erro ao buscar todos os agendamentos." });
+    }
+  };
 }
