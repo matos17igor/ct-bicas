@@ -26,4 +26,6 @@ router.get("/courts", courtController.index);
 router.post("/bookings", authMiddleware, bookingController.create);
 router.get("/me/bookings", authMiddleware, bookingController.indexByUser);
 
+router.get("/courts/:courtId/bookings", bookingController.listByCourtAndDate);
+
 export { router };

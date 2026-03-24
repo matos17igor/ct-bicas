@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import { AuthRequest } from "../middlewares/authMiddleware.js";
 
@@ -73,6 +73,46 @@ export class BookingController {
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Erro ao buscar agendamentos" });
+    }
+  };
+
+  listByCourtAndDate = async (req: Request, res: Response) => {
+    try {
+      const courtId = req.params.courtId as string;
+      const date = req.query.date as string;
+
+      if (!date) {
+        return res
+          .status(400)
+          .json({ error: "A data e obrigatoria (formato YYYY-MM-DD)" });
+      }
+
+      const searchDate = new Date(date);
+      const startOfDay = new Date(searchDate.setUTCHours(0, 0, 0, 0));
+      const endOfDay = new Date(searchDate.setUTCHours(23, 59, 59, 999));
+
+      const bookings = await prisma.booking.findMany({
+        where: {
+          courtId,
+          startTime: {
+            gte: startOfDay,
+            lte: endOfDay,
+          },
+        },
+        select: {
+          id: true,
+          startTime: true,
+          endTime: true,
+        },
+        orderBy: {
+          startTime: "asc",
+        },
+      });
+
+      res.json(bookings);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erro ao procurar horários ocupados." });
     }
   };
 }
