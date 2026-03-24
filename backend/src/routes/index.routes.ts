@@ -24,5 +24,6 @@ router.post("/courts", authMiddleware, adminMiddleware, courtController.create);
 router.get("/courts", courtController.index);
 
 router.post("/bookings", authMiddleware, bookingController.create);
+router.get("/me/bookings", authMiddleware, bookingController.indexByUser);
 
 export { router };

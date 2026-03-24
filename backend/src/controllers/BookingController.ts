@@ -56,4 +56,23 @@ export class BookingController {
       res.status(500).json({ error: "Erro ao realizar agendamento" });
     }
   };
+
+  indexByUser = async (req: AuthRequest, res: Response) => {
+    try {
+      const userId = req.userId as string;
+
+      const bookings = await prisma.booking.findMany({
+        where: { userId },
+        include: {
+          court: true,
+        },
+        orderBy: [{ date: "asc" }, { startTime: "asc" }],
+      });
+
+      res.json(bookings);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: "Erro ao buscar agendamentos" });
+    }
+  };
 }
