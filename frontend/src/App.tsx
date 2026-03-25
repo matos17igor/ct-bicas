@@ -1,6 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashbord";
+import { Courts } from "./pages/Courts";
+import { Schedule } from "./pages/Schedule";
+import { AdminDashboard } from "./pages/AdminDashboard";
+
 import type { JSX } from "react";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
@@ -23,6 +27,30 @@ export function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/courts"
+          element={
+            <PrivateRoute>
+              <Courts />
+            </PrivateRoute>
+          }
+        ></Route>
+        <Route
+          path="/courts/:courtId"
+          element={
+            <PrivateRoute>
+              <Schedule />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        ></Route>
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
