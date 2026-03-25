@@ -3,6 +3,12 @@ import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 import logoCt from "../assets/ct-bicas-removebg-preview.png";
+import { jwtDecode } from "jwt-decode";
+
+interface DecodedToken {
+  id: string;
+  role: string;
+}
 
 export function Login() {
   const navigate = useNavigate();
@@ -22,7 +28,14 @@ export function Login() {
 
       const { token } = response.data;
       localStorage.setItem("@CTBicas:token", token);
-      navigate("/dashboard");
+
+      const decoded = jwtDecode<DecodedToken>(token);
+      console.log("Funcao: " + decoded.role);
+      if (decoded.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       console.error(err);
       setError("E-mail ou senha inválidos. Tente novamente.");
