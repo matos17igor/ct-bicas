@@ -58,7 +58,7 @@ export function Dashboard() {
 
   // Função simples para formatar a data que vem do banco
   function formatDate(isoString: string) {
-    return new Date(isoString).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+    return new Date(isoString).toLocaleDateString("pt-BR");
   }
 
   // Função para pegar só a hora da string do banco
@@ -66,7 +66,6 @@ export function Dashboard() {
     return new Date(isoString).toLocaleTimeString("pt-BR", {
       hour: "2-digit",
       minute: "2-digit",
-      timeZone: "UTC",
     });
   }
 
@@ -85,6 +84,12 @@ export function Dashboard() {
               Meus Horários Marcados ⚽🎾
             </h2>
           </div>
+          <button
+            onClick={() => navigate("/courts")}
+            className="px-5 py-2.5 bg-green-600 text-white rounded-xl text-sm font-semibold hover:bg-green-700 transition-colors cursor-pointer"
+          >
+            Novo Agendamento
+          </button>
           <button
             onClick={handleLogout}
             className="px-5 py-2.5 bg-red-600 text-white rounded-xl text-sm font-semibold hover:bg-red-700 transition-colors cursor-pointer"
