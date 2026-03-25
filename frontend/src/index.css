@@ -1,1 +1,27 @@
 @import "tailwindcss";
+
+/* 👇 Configuração de Temas e Cores do CT Bicas 👇 */
+@theme {
+  /* Fundo e Seções Principais (Dark Mode) */
+  --color-ct-dark: #121212;
+  /* Cards, Inputs e Elementos Secundários */
+  --color-ct-card: #2c2c2c;
+  /* Dourado Solar / Areia (Ouro) - Usado para CTAs e Destaques */
+  --color-ct-gold: #d4af37;
+  /* Dourado Mais Brilhante para Hover */
+  --color-ct-gold-hover: #ffd700;
+  /* Texto Principal (Leitura Longa) */
+  --color-ct-text: #f5f5f5;
+  /* Texto Secundário e Subtítulos (Cinza Claro) */
+  --color-ct-muted: #a3a3a3;
+}
+
+/*  Estilos Base Globais  */
+@layer base {
+  body {
+    background-color: var(--color-ct-dark);
+    color: var(--color-ct-text);
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+}
