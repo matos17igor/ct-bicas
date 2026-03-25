@@ -28,7 +28,7 @@ export class AuhtController {
         throw new Error("A variavel JWT_SECRET nao esta definida no .env");
       }
 
-      const token = jwt.sign({ id: user.id }, secret, {
+      const token = jwt.sign({ id: user.id, role: user.role }, secret, {
         expiresIn: "1d",
       });
 
