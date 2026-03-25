@@ -1,5 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 
+import logoCt from "../assets/ct-bicas-removebg-preview.png";
+
 export function AdminSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,8 +17,14 @@ export function AdminSidebar() {
     <aside className="w-64 bg-slate-900 min-h-screen flex flex-col text-slate-300">
       {/* Logo / Título do Sidebar */}
       <div className="p-6 flex items-center gap-3 border-b border-slate-800">
-        <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-          <span className="text-white font-bold">CT</span>
+        <div className="w-24 h-24 rounded-lg justify-center shadow-lg">
+          <span className="text-white font-bold">
+            <img
+              src={logoCt}
+              alt="Logo CT Bicas"
+              className="w-24 h-24 object-contain mb-5 drop-shadow-md"
+            />
+          </span>
         </div>
         <span className="text-white font-bold text-lg tracking-wide">
           Painel Gerencial
@@ -61,7 +69,7 @@ export function AdminSidebar() {
           onClick={handleLogout}
           className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-800 text-red-400 rounded-lg hover:bg-slate-700 hover:text-red-300 transition-colors cursor-pointer"
         >
-          <span>🚪</span> Sair do Sistema
+          <span>🚪</span> Sair
         </button>
       </div>
     </aside>
