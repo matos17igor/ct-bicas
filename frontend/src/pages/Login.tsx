@@ -14,8 +14,13 @@ interface DecodedToken {
 
 export function Login() {
   const navigate = useNavigate();
+
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [successMsg, setSuccessMsg] = useState("");
   const [error, setError] = useState("");
 
   async function handleLogin(e: React.SyntheticEvent) {
@@ -32,7 +37,6 @@ export function Login() {
       localStorage.setItem("@CTBicas:token", token);
 
       const decoded = jwtDecode<DecodedToken>(token);
-      console.log("Funcao: " + decoded.role);
       if (decoded.role === "ADMIN") {
         navigate("/admin");
       } else {
@@ -44,10 +48,31 @@ export function Login() {
     }
   }
 
+  async function handleRegister(e: React.SyntheticEvent) {
+    e.preventDefault();
+    setError("");
+    setSuccessMsg("");
+
+    try {
+      await api.post("/users", { name, email, password });
+
+      setIsRegistering(false);
+      setSuccessMsg(
+        "Conta criada com sucesso! Faça seu login para entrar na arena."
+      );
+      setPassword("");
+    } catch (err: any) {
+      console.error(err);
+      setError(
+        err.response?.data?.error || "Erro ao criar conta. Verifique os dados."
+      );
+    }
+  }
+
   return (
     <div className="h-screen w-full flex bg-ct-dark overflow-hidden">
       <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-12 overflow-y-auto items-center">
-        <div className="mb-12 flex flex-col items-center">
+        <div className="mb-19 flex flex-col items-center">
           <div className="bg-white p-3 rounded-2xl mb-8 shadow-lg shadow-black/50">
             <img
               src={logoCt}
@@ -57,17 +82,34 @@ export function Login() {
           </div>
 
           <h2 className="text-4xl font-extrabold text-ct-text tracking-tighter">
-            Bem-vindo ao CT Bicas.
+            {isRegistering ? "Crie sua conta." : "Bem-vindo ao CT Bicas."}
           </h2>
           <p className="mt-3 text-lg text-ct-muted">
-            Faça login para reservar sua quadra e entrar no jogo.
+            {isRegistering
+              ? "Junte-se ao CT Bicas e venha conhecer as melhores quadras da região!"
+              : "Faça login para reservar sua quadra e entrar no jogo."}
           </p>
         </div>
 
         <form
-          onSubmit={handleLogin}
-          className="flex flex-col gap-6 w-full max-w-md"
+          onSubmit={isRegistering ? handleRegister : handleLogin}
+          className="flex flex-col gap-5 w-full max-w-md"
         >
+          {isRegistering && (
+            <div className="animate-fade-in">
+              <label className="text-sm font-semibold text-ct-text block mb-2">
+                Nome Completo
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                placeholder="Seu nome"
+                className="w-full px-5 py-3.5 bg-ct-card border border-slate-700 rounded-xl text-ct-text placeholder:text-slate-500 focus:ring-2 focus:ring-ct-gold/50 focus:border-ct-gold transition-all outline-none"
+              />
+            </div>
+          )}
           <div>
             <label className="text-sm font-semibold text-ct-text block mb-2">
               Seu E-mail
@@ -87,12 +129,14 @@ export function Login() {
               <label className="text-sm font-semibold text-ct-text">
                 Sua Senha
               </label>
-              <a
-                href="#"
-                className="text-xs text-ct-gold hover:text-ct-gold-hover hover:underline"
-              >
-                Esqueceu a senha?
-              </a>
+              {!isRegistering && (
+                <a
+                  href="#"
+                  className="text-xs text-ct-gold hover:text-ct-gold-hover hover:underline"
+                >
+                  Esqueceu a senha?
+                </a>
+              )}
             </div>
             <input
               type="password"
@@ -109,25 +153,54 @@ export function Login() {
               ⚠️ {error}
             </div>
           )}
-
+          {successMsg && !isRegistering && (
+            <div className="bg-green-950/50 text-green-400 text-sm p-4 rounded-xl border border-green-800">
+              ✅ {successMsg}
+            </div>
+          )}
           <button
             type="submit"
-            className="w-full bg-ct-gold text-ct-dark font-bold py-4 px-6 rounded-xl hover:bg-ct-gold-hover focus:outline-none focus:ring-4 focus:ring-ct-gold/30 transition-all duration-150 cursor-pointer text-lg shadow-lg shadow-ct-gold/20"
+            className="w-full mt-2 bg-ct-gold text-ct-dark font-bold py-4 px-6 rounded-xl hover:bg-ct-gold-hover focus:outline-none focus:ring-4 focus:ring-ct-gold/30 transition-all duration-150 cursor-pointer text-lg shadow-lg shadow-ct-gold/20"
           >
-            Entrar no Sistema
+            {isRegistering ? "Cadastrar" : "Entrar no Sistema"}
           </button>
         </form>
 
-        <p className="mt-12 text-center md:text-left text-sm text-ct-muted w-full max-w-md">
-          Não tem conta?{" "}
-          <a
-            href="#"
-            className="text-ct-gold font-medium hover:text-ct-gold-hover hover:underline"
-          >
-            Cadastre-se grátis
-          </a>
-          .
-        </p>
+        <div className="mt-12 text-center md:text-left text-sm text-ct-muted w-full max-w-md">
+          {isRegistering ? (
+            <p>
+              Já tem uma conta?{" "}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRegistering(false);
+                  setError("");
+                  setSuccessMsg("");
+                }}
+                className="text-ct-gold font-medium hover:text-ct-gold-hover hover:underline cursor-pointer bg-transparent border-none p-0"
+              >
+                Faça login
+              </button>
+              .
+            </p>
+          ) : (
+            <p>
+              Não tem conta?{" "}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRegistering(true);
+                  setError("");
+                  setSuccessMsg("");
+                }}
+                className="text-ct-gold font-medium hover:text-ct-gold-hover hover:underline cursor-pointer bg-transparent border-none p-0"
+              >
+                Cadastre-se grátis
+              </button>
+              .
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="hidden md:block w-1/2 relative overflow-hidden bg-slate-900">
