@@ -45,14 +45,16 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen flex bg-ct-dark">
-      <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-12">
-        <div className="mb-12 flex flex-col items-start">
-          <img
-            src={logoCt}
-            alt="Logo CT Bicas"
-            className="w-35 h-35 object-contain mb-8"
-          />
+    <div className="h-screen w-full flex bg-ct-dark overflow-hidden">
+      <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-12 overflow-y-auto items-center">
+        <div className="mb-12 flex flex-col items-center">
+          <div className="bg-white p-3 rounded-2xl mb-8 shadow-lg shadow-black/50">
+            <img
+              src={logoCt}
+              alt="Logo CT Bicas"
+              className="w-24 h-24 object-contain brightness-105 contrast-105"
+            />
+          </div>
 
           <h2 className="text-4xl font-extrabold text-ct-text tracking-tighter">
             Bem-vindo ao CT Bicas.
