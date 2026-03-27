@@ -62,28 +62,25 @@ export function Dashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      {/* O Menu Lateral Fixo na Esquerda */}
+    <div className="flex min-h-screen bg-ct-dark text-ct-text">
       <UserSidebar />
 
-      {/* A Área Central de Conteúdo */}
       <main className="flex-1 p-8 md:p-12 overflow-y-auto">
-        <div className="max-w-5xl mx-auto">
-          {/* Cabeçalho limpo, sem os botões feios */}
-          <div className="mb-10 pb-6 border-b border-slate-200">
-            <h2 className="text-3xl font-extrabold text-slate-950 tracking-tight">
-              Meus Jogos Marcados 🎾
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-10 pb-6 border-b border-slate-800">
+            <h2 className="text-3xl font-extrabold tracking-tight text-ct-text">
+              Minhas Partidas
             </h2>
-            <p className="text-slate-500 mt-2">
+            <p className="text-ct-muted mt-2">
               Gerencie seus próximos horários no CT Bicas.
             </p>
           </div>
 
           {bookings.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-slate-100 shadow-sm shadow-slate-100/50">
-              <span className="text-5xl">📅</span>
-              <p className="mt-5 text-slate-600 font-medium">
-                Você ainda não tem jogos marcados.
+            <div className="text-center py-24 bg-ct-card rounded-3xl border border-slate-800 shadow-2xl">
+              <span className="text-6xl opacity-80">📅</span>
+              <p className="mt-6 text-ct-muted text-lg font-medium">
+                Você ainda não tem jogos marcados na areia.
               </p>
             </div>
           ) : (
@@ -91,28 +88,36 @@ export function Dashboard() {
               {bookings.map((booking) => (
                 <div
                   key={booking.id}
-                  className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm shadow-slate-100/50 hover:shadow-md transition-shadow"
+                  className="bg-ct-card p-6 rounded-2xl border border-slate-700 shadow-xl hover:border-ct-gold/50 transition-colors flex flex-col justify-between"
                 >
-                  <h3 className="text-lg font-bold text-slate-950 mb-4 flex items-center gap-2">
-                    <span className="text-xl">🏟️</span>
-                    {booking.court.name}
-                  </h3>
+                  <div>
+                    <h3 className="text-xl font-black text-ct-text mb-5 flex items-center gap-3">
+                      <span className="text-2xl">🏟️</span>
+                      {booking.court.name}
+                    </h3>
 
-                  <div className="space-y-2 text-sm text-slate-700">
-                    <p className="flex items-center gap-2">
-                      <span className="text-slate-400">📅</span>
-                      <strong>Data:</strong> {formatDate(booking.date)}
-                    </p>
-                    <p className="flex items-center gap-2">
-                      <span className="text-slate-400">🕒</span>
-                      <strong>Horário:</strong> {formatTime(booking.startTime)}{" "}
-                      às {formatTime(booking.endTime)}
-                    </p>
+                    <div className="space-y-3 text-ct-muted">
+                      <p className="flex items-center gap-3">
+                        <span className="text-ct-gold text-lg">📅</span>
+                        <strong className="text-ct-text font-semibold">
+                          Data:
+                        </strong>{" "}
+                        {formatDate(booking.date)}
+                      </p>
+                      <p className="flex items-center gap-3">
+                        <span className="text-ct-gold text-lg">🕒</span>
+                        <strong className="text-ct-text font-semibold">
+                          Horário:
+                        </strong>{" "}
+                        {formatTime(booking.startTime)} às{" "}
+                        {formatTime(booking.endTime)}
+                      </p>
+                    </div>
                   </div>
 
                   <button
                     onClick={() => handleCancelBooking(booking.id)}
-                    className="mt-5 w-full px-4 py-2 bg-transparent text-red-500 border border-red-500 rounded-lg text-sm font-medium cursor-pointer transition-colors duration-200 hover:bg-red-50"
+                    className="mt-8 w-full px-4 py-3 bg-transparent text-red-400 border border-red-500/30 rounded-xl text-sm font-bold cursor-pointer transition-all duration-200 hover:bg-red-500/10 hover:border-red-400"
                   >
                     Cancelar Jogo
                   </button>
