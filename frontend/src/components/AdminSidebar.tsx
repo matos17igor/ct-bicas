@@ -1,5 +1,4 @@
 import { useNavigate, useLocation } from "react-router-dom";
-
 import logoCt from "../assets/ct-bicas-removebg-preview.png";
 
 export function AdminSidebar() {
@@ -14,62 +13,68 @@ export function AdminSidebar() {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <aside className="w-64 bg-slate-900 min-h-screen flex flex-col text-slate-300">
+    <aside className="w-68 bg-ct-dark border-r border-slate-300/10 min-h-screen flex flex-col text-slate-300">
       {/* Logo / Título do Sidebar */}
-      <div className="p-6 flex items-center gap-3 border-b border-slate-800">
-        <div className="w-24 h-24 rounded-lg justify-center shadow-lg">
-          <span className="text-white font-bold">
-            <img
-              src={logoCt}
-              alt="Logo CT Bicas"
-              className="w-24 h-24 object-contain mb-5 drop-shadow-md"
-            />
+      <div className="p-8 flex items-center gap-4 border-b border-slate-300/10 mb-6">
+        <div className="w-12 h-12 bg-ct-gold rounded-xl flex items-center justify-center shadow-lg shadow-ct-gold/10">
+          <span className="text-ct-dark font-black text-xl">
+            <img src={logoCt} alt="Logo CT Bicas" />
           </span>
         </div>
-        <span className="text-white font-bold text-lg tracking-wide">
-          Painel Gerencial
-        </span>
+        <div>
+          <span className="text-ct-text font-extrabold text-xl tracking-tighter block leading-none">
+            PAINEL
+          </span>
+          <span className="text-ct-gold font-medium text-xs uppercase tracking-widest mt-1 block">
+            Administrativo
+          </span>
+        </div>
       </div>
 
-      {/* Menu de Navegação */}
-      <nav className="flex-1 p-4 flex flex-col gap-2 mt-4">
+      <nav className="flex-1 px-5 flex flex-col gap-2.5">
         <button
           onClick={() => navigate("/admin")}
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer ${
-            isActive("/admin")
-              ? "bg-blue-600 text-white"
-              : "hover:bg-slate-800 hover:text-white"
-          }`}
+          className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left font-semibold transition-colors cursor-pointer text-lg
+            ${
+              isActive("/admin")
+                ? "bg-ct-card text-ct-gold shadow-md"
+                : "text-slate-400 hover:bg-ct-card hover:text-ct-gold hover:shadow-sm"
+            }`}
         >
-          <span>📊</span> Visão Geral
+          <span className="text-2xl opacity-90">📊</span> Visão Geral
         </button>
 
         <button
           onClick={() => alert("Em breve: Tela de gerenciar quadras!")}
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer ${
-            isActive("/admin/courts")
-              ? "bg-blue-600 text-white"
-              : "hover:bg-slate-800 hover:text-white"
-          }`}
+          className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left font-semibold transition-colors cursor-pointer text-lg
+            ${
+              isActive("/admin/courts")
+                ? "bg-ct-card text-ct-gold"
+                : "text-slate-400 hover:bg-ct-card hover:text-ct-gold hover:shadow-sm"
+            }`}
         >
-          <span>🏟️</span> Gerenciar Quadras
+          <span className="text-2xl opacity-90">🏟️</span> Gerenciar Quadras
         </button>
 
         <button
           onClick={() => alert("Em breve: Bloquear horários para manutenção!")}
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer hover:bg-slate-800 hover:text-white`}
+          className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left font-semibold transition-colors cursor-pointer text-lg
+            ${
+              isActive("/admin/block")
+                ? "bg-ct-card text-ct-gold"
+                : "text-slate-400 hover:bg-ct-card hover:text-ct-gold hover:shadow-sm"
+            }`}
         >
-          <span>📅</span> Bloquear Horários
+          <span className="text-2xl opacity-90">📅</span> Bloquear Horários
         </button>
       </nav>
 
-      {/* Rodapé do Sidebar com botão de sair */}
-      <div className="p-4 border-t border-slate-800">
+      <div className="p-5 mt-auto border-t border-slate-300/10">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-800 text-red-400 rounded-lg hover:bg-slate-700 hover:text-red-300 transition-colors cursor-pointer"
+          className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-red-950/20 text-red-400 rounded-xl hover:bg-red-950/40 hover:text-red-300 transition-colors cursor-pointer font-bold"
         >
-          <span>🚪</span> Sair
+          <span>🚪</span> Sair do Sistema
         </button>
       </div>
     </aside>

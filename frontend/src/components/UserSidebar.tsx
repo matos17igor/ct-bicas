@@ -1,62 +1,67 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import logoCt from "../assets/ct-bicas-removebg-preview.png";
 
 export function UserSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
   function handleLogout() {
-    localStorage.removeItem("@ArenaSaaS:token");
+    localStorage.removeItem("@CTBicas:token");
     navigate("/");
   }
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
   return (
-    <aside className="w-64 bg-white border-r border-slate-200 min-h-screen flex flex-col">
-      {/* Logo da Arena */}
-      <div className="p-6 flex items-center gap-3 border-b border-slate-100">
-        <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center shadow-md shadow-blue-200">
-          <span className="text-white font-bold">CT</span>
+    <aside className="w-68 bg-ct-card border-r border-slate-300/10 min-h-screen flex flex-col text-slate-300">
+      <div className="p-8 flex items-center gap-4 border-b border-slate-300/10 mb-6">
+        <div className="w-12 h-12 bg-ct-gold rounded-xl flex items-center justify-center shadow-lg shadow-ct-gold/10">
+          <span className="text-ct-dark font-black text-xl">
+            <img src={logoCt} alt="Logo CT Bicas" />
+          </span>
         </div>
-        <span className="text-slate-900 font-bold text-lg tracking-wide">
-          Área do Atleta
-        </span>
+        <div>
+          <span className="text-ct-text font-extrabold text-xl tracking-tighter block leading-none">
+            ÁREA DO
+          </span>
+          <span className="text-ct-gold font-medium text-xs uppercase tracking-widest mt-1 block">
+            Atleta
+          </span>
+        </div>
       </div>
 
-      {/* Menu de Navegação */}
-      <nav className="flex-1 p-4 flex flex-col gap-2 mt-2">
+      <nav className="flex-1 px-5 flex flex-col gap-2.5">
         <button
           onClick={() => navigate("/dashboard")}
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left font-medium transition-colors cursor-pointer 
+          className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left font-semibold transition-colors cursor-pointer text-lg
             ${
               location.pathname === "/dashboard"
-                ? "bg-blue-50 text-blue-700"
-                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                ? "bg-ct-dark text-ct-gold shadow-inner border border-slate-700"
+                : "text-slate-400 hover:bg-ct-dark/50 hover:text-ct-gold hover:shadow-sm"
             }`}
         >
-          <span className="text-xl">🎾</span> Meus Jogos
+          <span className="text-2xl opacity-90">🎾</span> Meus Jogos
         </button>
 
         <button
           onClick={() => navigate("/courts")}
-          className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left font-medium transition-colors cursor-pointer 
+          className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left font-semibold transition-colors cursor-pointer text-lg
             ${
               isActive("/courts")
-                ? "bg-blue-50 text-blue-700"
-                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                ? "bg-ct-dark text-ct-gold shadow-inner border border-slate-700"
+                : "text-slate-400 hover:bg-ct-dark/50 hover:text-ct-gold hover:shadow-sm"
             }`}
         >
-          <span className="text-xl">🏟️</span> Agendar Quadra
+          <span className="text-2xl opacity-90">🏟️</span> Agendar Quadra
         </button>
       </nav>
 
-      {/* Rodapé com botão de Sair */}
-      <div className="p-4 border-t border-slate-100">
+      <div className="p-5 mt-auto border-t border-slate-300/10">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100 transition-colors cursor-pointer"
+          className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-red-950/20 text-red-400 rounded-xl hover:bg-red-950/40 hover:text-red-300 transition-colors cursor-pointer font-bold"
         >
-          <span className="text-lg">🚪</span> Sair
+          <span>🚪</span> Sair
         </button>
       </div>
     </aside>
