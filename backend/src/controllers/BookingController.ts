@@ -62,7 +62,7 @@ export class BookingController {
       const userId = req.userId as string;
 
       const bookings = await prisma.booking.findMany({
-        where: { userId },
+        where: { userId, endTime: { gt: new Date() } },
         include: {
           court: true,
         },
@@ -153,6 +153,7 @@ export class BookingController {
   indexAll = async (req: Request, res: Response) => {
     try {
       const bookings = await prisma.booking.findMany({
+        where: { endTime: { gt: new Date() } },
         include: {
           court: true, // Traz os dados da quadra
           user: {
