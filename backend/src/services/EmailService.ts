@@ -143,3 +143,53 @@ export async function sendBookingCancelledToClient(data: {
     `,
   });
 }
+
+// E-mail de CONFIRMAÇÃO DE CADASTRO
+export async function sendVerificationEmail(email: string, name: string, code: string) {
+  await transporter.sendMail({
+    from: `"CT Bicas 🎾" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: `🔐 Confirme seu E-mail — CT Bicas`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; background: #0f172a; color: #e2e8f0; border-radius: 16px; overflow: hidden;">
+        <div style="background: #c9a227; padding: 28px 32px; text-align: center;">
+          <h1 style="margin: 0; color: #0f172a; font-size: 24px; font-weight: 900;">🎾 CT BICAS</h1>
+          <p style="margin: 6px 0 0; color: #0f172a; font-size: 13px; font-weight: 600; text-transform: uppercase;">Validação de Conta</p>
+        </div>
+        <div style="padding: 32px; text-align: center;">
+          <p style="font-size: 18px; font-weight: 700; margin: 0 0 16px;">Olá, ${name}!</p>
+          <p style="color: #94a3b8; margin: 0 0 28px; font-size: 15px;">Use o código abaixo para ativar sua conta no sistema do CT Bicas:</p>
+          <div style="background: #1e293b; border-radius: 12px; padding: 24px; font-size: 32px; font-weight: 900; letter-spacing: 8px; color: #c9a227;">
+            ${code}
+          </div>
+          <p style="color: #64748b; margin: 28px 0 0; font-size: 13px;">Se você não se cadastrou em nossa plataforma, ignore este e-mail.</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
+// E-mail de RECUPERAÇÃO DE SENHA
+export async function sendPasswordResetEmail(email: string, name: string, code: string) {
+  await transporter.sendMail({
+    from: `"CT Bicas 🎾" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: `🔑 Recuperação de Senha — CT Bicas`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; background: #0f172a; color: #e2e8f0; border-radius: 16px; overflow: hidden;">
+        <div style="background: #c9a227; padding: 28px 32px; text-align: center;">
+          <h1 style="margin: 0; color: #0f172a; font-size: 24px; font-weight: 900;">🎾 CT BICAS</h1>
+          <p style="margin: 6px 0 0; color: #0f172a; font-size: 13px; font-weight: 600; text-transform: uppercase;">Recuperação de Acesso</p>
+        </div>
+        <div style="padding: 32px; text-align: center;">
+          <p style="font-size: 18px; font-weight: 700; margin: 0 0 16px;">Olá, ${name}.</p>
+          <p style="color: #94a3b8; margin: 0 0 28px; font-size: 15px;">Recebemos um pedido para redefinir sua senha. Use o código abaixo:</p>
+          <div style="background: #1e293b; border-radius: 12px; padding: 24px; font-size: 32px; font-weight: 900; letter-spacing: 8px; color: #c9a227;">
+            ${code}
+          </div>
+          <p style="color: #64748b; margin: 28px 0 0; font-size: 13px;">Este código é válido por 1 hora. Se não foi você, ignore este e-mail.</p>
+        </div>
+      </div>
+    `,
+  });
+}

@@ -8,14 +8,31 @@ datasource db {
 }
 
 model User {
+  id         String    @id @default(uuid())
+  name       String
+  email      String    @unique
+  password   String
+  phone      String?
+  role       String    @default("USER")
+  isVerified Boolean   @default(false)
+  bookings   Booking[]
+  tokens     Token[]
+  createdAt  DateTime  @default(now())
+}
+
+model Token {
   id        String    @id @default(uuid())
-  name      String
-  email     String    @unique
-  password  String
-  phone     String?
-  role      String    @default("USER")
-  bookings  Booking[]
+  code      String
+  type      TokenType
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
   createdAt DateTime  @default(now())
+}
+
+enum TokenType {
+  VERIFY_EMAIL
+  RESET_PASSWORD
 }
 
 model Court {

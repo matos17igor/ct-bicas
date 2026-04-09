@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserController } from "../controllers/UserController.js";
-import { AuhtController } from "../controllers/AuthController.js";
+import { AuthController } from "../controllers/AuthController.js";
 import { CourtController } from "../controllers/CourtController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { adminMiddleware } from "../middlewares/adminMiddleware.js";
@@ -10,14 +10,18 @@ import { BlockedSlotController } from "../controllers/BlockedSlotController.js";
 
 const router = Router();
 const userController = new UserController();
-const auhtController = new AuhtController();
+const authController = new AuthController();
 const courtController = new CourtController();
 const bookingController = new BookingController();
 const profileController = new ProfileController();
 const blockedSlotController = new BlockedSlotController();
 
 router.post("/users", userController.create);
-router.post("/login", auhtController.login);
+router.post("/login", authController.login);
+router.post("/auth/verify-email", authController.verifyEmail);
+router.post("/auth/resend-code", authController.resendCode);
+router.post("/auth/forgot-password", authController.forgotPassword);
+router.post("/auth/reset-password", authController.resetPassword);
 router.get("/me", authMiddleware, profileController.getMe);
 router.patch("/me", authMiddleware, profileController.updateMe);
 router.patch("/me/password", authMiddleware, profileController.updatePassword);

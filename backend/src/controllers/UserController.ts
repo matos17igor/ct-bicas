@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { prisma } from "../lib/prisma.js";
+import { sendVerificationEmail } from "../services/EmailService.js";
 
 export class UserController {
   async create(req: Request, res: Response) {
@@ -32,11 +33,29 @@ export class UserController {
         },
       });
 
+      // Gera código de 6 dígitos
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+      await prisma.token.create({
+        data: {
+          code,
+          type: "VERIFY_EMAIL",
+          userId: user.id,
+          expiresAt: new Date(Date.now() + 1000 * 60 * 60), // 1 hora
+        },
+      });
+
+      // Envia em background
+      sendVerificationEmail(user.email, user.name, code)
+        .then(() => console.log("E-mail de confirmação enviado para", user.email))
+        .catch((e) => console.error("Erro ao enviar e-mail de confirmação:", e));
+
       // Retorna os dados sem a senha
       return res.status(201).json({
         id: user.id,
         name: user.name,
         email: user.email,
+        isVerified: user.isVerified,
       });
     } catch (error) {
       console.log(error);
