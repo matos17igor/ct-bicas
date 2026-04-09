@@ -7,7 +7,7 @@ export function UserSidebar() {
 
   function handleLogout() {
     localStorage.removeItem("@CTBicas:token");
-    navigate("/");
+    navigate("/login");
   }
 
   const isActive = (path: string) => location.pathname.startsWith(path);

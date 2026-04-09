@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Dashboard } from "./pages/Dashbord";
 import { Courts } from "./pages/Courts";
@@ -12,14 +13,15 @@ import type { JSX } from "react";
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const token = localStorage.getItem("@CTBicas:token");
 
-  return token ? children : <Navigate to="/" />;
+  return token ? children : <Navigate to="/login" />;
 }
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
 
         <Route
           path="/dashboard"
