@@ -4,55 +4,52 @@ import { api } from "../services/api";
 import { UserSidebar } from "../components/UserSidebar";
 
 export function Schedule() {
-  const { courtId } = useParams(); // Pega o ID da quadra que vai estar na URL
+  const { courtId } = useParams();
   const navigate = useNavigate();
 
-  // Define a data de hoje como padrão para o calendário
   const now = new Date();
   const localToday = `${now.getFullYear()}-${String(
     now.getMonth() + 1
   ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
   const [date, setDate] = useState(localToday);
   const [bookedHours, setBookedHours] = useState<number[]>([]);
   const [selectedHour, setSelectedHour] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Horários de funcionamento (8h às 22h)
   const operatingHours = [
     8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
   ];
 
-  // Busca os horários ocupados sempre que o usuário mudar a data
   useEffect(() => {
     async function fetchBookings() {
       try {
         const response = await api.get(`/courts/${courtId}/bookings`, {
           params: { date },
         });
-
-        // Extrai apenas a hora dos agendamentos que vieram do banco
         const occupied = response.data.map((booking: any) => {
           return new Date(booking.startTime).getHours();
         });
-
         setBookedHours(occupied);
         setSelectedHour(null);
       } catch (error) {
         console.error("Erro ao buscar horários:", error);
       }
     }
-
-    if (courtId && date) {
-      fetchBookings();
-    }
+    if (courtId && date) fetchBookings();
   }, [courtId, date]);
 
-  // Função disparada ao clicar em um horário livre
-  async function handleConfirmSchedule() {
-    if (selectedHour === null) {
-      alert("Por favor, selecione um horário primeiro.");
-      return;
-    }
+  // Abre o modal de confirmação
+  function handleOpenModal() {
+    if (selectedHour === null) return;
+    setShowModal(true);
+  }
 
+  // Envia o agendamento após confirmar no modal
+  async function handleConfirmSchedule() {
+    if (selectedHour === null) return;
+    setIsLoading(true);
     try {
       const startTime = new Date(
         `${date}T${selectedHour.toString().padStart(2, "0")}:00:00`
@@ -62,12 +59,24 @@ export function Schedule() {
       ).toISOString();
 
       await api.post("/bookings", { courtId, date, startTime, endTime });
-      alert("Jogo agendado com sucesso! 🎾");
+      setShowModal(false);
       navigate("/dashboard");
     } catch (error: any) {
       console.error(error);
+      setShowModal(false);
       alert(error.response?.data?.error || "Erro ao agendar o jogo.");
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  // Formata a data para exibição no modal
+  function formatDateBR(d: string) {
+    return new Date(d + "T00:00:00").toLocaleDateString("pt-BR", {
+      weekday: "long",
+      day: "2-digit",
+      month: "long",
+    });
   }
 
   return (
@@ -110,8 +119,6 @@ export function Schedule() {
               const currentHour = new Date().getHours();
               const isPast = date === localToday && hour <= currentHour;
               const isDisabled = isBooked || isPast;
-
-              // Verifica se este bloco específico é o selecionado
               const isSelected = selectedHour === hour;
 
               return (
@@ -124,10 +131,8 @@ export function Schedule() {
                       isDisabled
                         ? "bg-ct-card/60 text-slate-600 border-slate-700 opacity-50 cursor-not-allowed shadow-none"
                         : isSelected
-                        ? // SELECIONADO: Dourado Sólido
-                          "bg-ct-gold text-ct-dark border-ct-gold-hover cursor-pointer"
-                        : // LIVRE: Borda Dourada, texto Dourado
-                          "bg-ct-card text-ct-gold border-ct-gold hover:bg-ct-gold hover:text-ct-dark cursor-pointer"
+                        ? "bg-ct-gold text-ct-dark border-ct-gold-hover cursor-pointer"
+                        : "bg-ct-card text-ct-gold border-ct-gold hover:bg-ct-gold hover:text-ct-dark cursor-pointer"
                     }
                   `}
                 >
@@ -155,7 +160,7 @@ export function Schedule() {
           {selectedHour !== null && (
             <div className="mt-12 pt-8 border-t border-slate-700 flex justify-end">
               <button
-                onClick={handleConfirmSchedule}
+                onClick={handleOpenModal}
                 className="px-10 py-4 bg-ct-gold text-ct-dark font-black rounded-2xl hover:bg-ct-gold-hover transition-all duration-150 cursor-pointer text-xl shadow-2xl shadow-ct-gold/30 flex items-center gap-3"
               >
                 Confirmar Agendamento para as {selectedHour}:00h
@@ -164,6 +169,74 @@ export function Schedule() {
           )}
         </div>
       </main>
+
+      {/* Modal de Confirmação */}
+      {showModal && selectedHour !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => !isLoading && setShowModal(false)}
+          />
+
+          {/* Card do modal */}
+          <div className="relative z-10 bg-ct-card border border-slate-700 rounded-3xl shadow-2xl w-full max-w-md p-8 animate-fade-in">
+            <div className="text-center mb-8">
+              <span className="text-5xl">🎾</span>
+              <h3 className="text-2xl font-black text-ct-text mt-4">
+                Confirmar Reserva
+              </h3>
+              <p className="text-ct-muted text-sm mt-2">
+                Revise os detalhes antes de confirmar
+              </p>
+            </div>
+
+            {/* Detalhes da reserva */}
+            <div className="bg-ct-dark rounded-2xl p-6 border border-slate-700 space-y-4 mb-8">
+              <div className="flex items-center gap-3">
+                <span className="text-ct-gold text-xl">📅</span>
+                <div>
+                  <p className="text-xs text-ct-muted font-medium uppercase tracking-wider">
+                    Data
+                  </p>
+                  <p className="text-ct-text font-bold capitalize">
+                    {formatDateBR(date)}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-ct-gold text-xl">🕒</span>
+                <div>
+                  <p className="text-xs text-ct-muted font-medium uppercase tracking-wider">
+                    Horário
+                  </p>
+                  <p className="text-ct-text font-bold">
+                    {selectedHour}:00h até {selectedHour + 1}:00h
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Botões */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowModal(false)}
+                disabled={isLoading}
+                className="flex-1 py-3 bg-transparent border border-slate-600 text-ct-muted rounded-xl font-bold hover:border-slate-400 hover:text-ct-text transition-all cursor-pointer disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmSchedule}
+                disabled={isLoading}
+                className="flex-1 py-3 bg-ct-gold text-ct-dark font-black rounded-xl hover:bg-ct-gold-hover transition-all cursor-pointer shadow-lg shadow-ct-gold/20 disabled:opacity-70"
+              >
+                {isLoading ? "Agendando..." : "Confirmar ✓"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

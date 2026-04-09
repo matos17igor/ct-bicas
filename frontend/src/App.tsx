@@ -4,6 +4,7 @@ import { Dashboard } from "./pages/Dashbord";
 import { Courts } from "./pages/Courts";
 import { Schedule } from "./pages/Schedule";
 import { AdminDashboard } from "./pages/AdminDashboard";
+import { Profile } from "./pages/Profile";
 
 import type { JSX } from "react";
 
@@ -51,6 +52,15 @@ export function App() {
             </PrivateRoute>
           }
         ></Route>
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
