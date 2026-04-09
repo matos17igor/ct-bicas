@@ -14,6 +14,7 @@ interface AdminBooking {
   user: {
     name: string;
     email: string;
+    phone?: string | null;
   };
 }
 
@@ -140,6 +141,12 @@ export function AdminDashboard() {
                           <span className="text-ct-gold text-base">✉️</span>{" "}
                           {booking.user.email}
                         </span>
+                        {booking.user.phone && (
+                          <span className="flex items-center gap-2">
+                            <span className="text-ct-gold text-base">📱</span>{" "}
+                            {booking.user.phone}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -148,6 +155,16 @@ export function AdminDashboard() {
                     <div className="text-right text-xs text-slate-500 font-mono bg-ct-dark px-3 py-2 rounded-lg whitespace-nowrap border border-slate-800">
                       ID: {booking.id.slice(0, 8)}
                     </div>
+                    {booking.user.phone && (
+                      <a
+                        href={`https://wa.me/55${booking.user.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Olá ${booking.user.name}! Tudo certo com sua reserva no CT Bicas na ${booking.court.name} no dia ${formatDate(booking.date)} às ${formatTime(booking.startTime)}. Qualquer dúvida, estamos à disposição! 🎾`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 bg-green-600/10 text-green-400 border border-green-600/30 rounded-xl text-xs font-bold transition-all duration-200 hover:bg-green-600/20 hover:border-green-500 whitespace-nowrap"
+                      >
+                        <span>💬</span> WhatsApp
+                      </a>
+                    )}
                     <button
                       onClick={() => handleCancelBooking(booking.id)}
                       className="px-4 py-2 bg-transparent text-red-400 border border-red-500/30 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:bg-red-500/10 hover:border-red-400 whitespace-nowrap"
