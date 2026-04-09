@@ -4,6 +4,7 @@ import { AuthRequest } from "../middlewares/authMiddleware.js";
 import {
   sendBookingConfirmedToClient,
   sendBookingAlertToOwner,
+  sendBookingCancelledToClient,
 } from "../services/EmailService.js";
 
 export class BookingController {
@@ -145,11 +146,12 @@ export class BookingController {
 
   delete = async (req: AuthRequest, res: Response) => {
     try {
-      const id = req.params.id as string; // id do agendamento
+      const id = req.params.id as string;
       const userId = req.userId as string;
 
       const booking = await prisma.booking.findUnique({
         where: { id },
+        include: { court: true },
       });
 
       if (!booking) {
@@ -166,11 +168,43 @@ export class BookingController {
         });
       }
 
-      await prisma.booking.delete({
-        where: { id },
+      // Regra: usuários comuns não podem cancelar com menos de 1h de antecedência
+      if (user?.role !== "ADMIN") {
+        const now = new Date();
+        const diffMs = booking.startTime.getTime() - now.getTime();
+        const diffHours = diffMs / (1000 * 60 * 60);
+        if (diffHours < 1) {
+          return res.status(403).json({
+            error:
+              "Cancelamentos só são permitidos com até 1 hora de antecedência.",
+          });
+        }
+      }
+
+      // Busca dados do cliente que fez o agendamento
+      const bookingOwner = await prisma.user.findUnique({
+        where: { id: booking.userId },
       });
 
+      await prisma.booking.delete({ where: { id } });
+
       res.status(204).send();
+
+      // Envia email de cancelamento ao cliente em background
+      if (bookingOwner) {
+        sendBookingCancelledToClient({
+          clientName: bookingOwner.name,
+          clientEmail: bookingOwner.email,
+          courtName: booking.court.name,
+          date: booking.date.toISOString(),
+          startTime: booking.startTime.toISOString(),
+          endTime: booking.endTime.toISOString(),
+        })
+          .then(() => console.log("✅ Email cancelamento enviado!"))
+          .catch((err: Error) =>
+            console.error("❌ Erro email cancelamento:", err.message)
+          );
+      }
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Erro ao cancelar o agendamento" });
