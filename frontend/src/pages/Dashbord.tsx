@@ -15,6 +15,10 @@ interface Booking {
 export function Dashboard() {
   const [bookings, setBookings] = useState<Booking[]>([]);
 
+  const [slotToCancel, setSlotToCancel] = useState<string | null>(null);
+  const [isCanceling, setIsCanceling] = useState(false);
+  const [cancelError, setCancelError] = useState("");
+
   useEffect(() => {
     async function fetchMyBookings() {
       try {
@@ -27,29 +31,31 @@ export function Dashboard() {
     fetchMyBookings();
   }, []);
 
-  async function handleCancelBooking(id: string) {
-    const confirmDelete = window.confirm(
-      "Tem certeza que deseja cancelar este jogo?"
-    );
+  function handleCancelBooking(id: string) {
+    setSlotToCancel(id);
+    setCancelError("");
+  }
 
-    if (!confirmDelete) return;
+  async function confirmCancel() {
+    if (!slotToCancel) return;
+    setIsCanceling(true);
+    setCancelError("");
 
     try {
-      await api.delete(`/bookings/${id}`);
-
-      // Atualiza a lista na tela removendo apenas o jogo que foi cancelado
-      setBookings(bookings.filter((booking) => booking.id !== id));
-
-      alert("Jogo cancelado com sucesso!");
+      await api.delete(`/bookings/${slotToCancel}`);
+      setBookings(bookings.filter((booking) => booking.id !== slotToCancel));
+      setSlotToCancel(null);
     } catch (error) {
       console.error("Erro ao cancelar o jogo:", error);
-      alert("Não foi possível cancelar o jogo. Tente novamente.");
+      setCancelError("Não foi possível cancelar o jogo. Tente novamente.");
+    } finally {
+      setIsCanceling(false);
     }
   }
 
   // Função simples para formatar a data que vem do banco
   function formatDate(isoString: string) {
-    return new Date(isoString).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+    return new Date(isoString).toLocaleDateString("pt-BR");
   }
 
   // Função para pegar só a hora da string do banco
@@ -126,6 +132,40 @@ export function Dashboard() {
           )}
         </div>
       </main>
+
+      {/* Modal de Confirmação de Cancelamento */}
+      {slotToCancel && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => !isCanceling && setSlotToCancel(null)}
+          />
+          <div className="relative z-10 bg-ct-card border border-slate-700 rounded-3xl shadow-2xl w-full max-w-md p-8 animate-fade-in text-center">
+            <span className="text-5xl">⚠️</span>
+            <h3 className="text-2xl font-black text-ct-text mt-4">Cancelar Agendamento</h3>
+            <p className="text-ct-muted text-sm mt-2 mb-8">Tem certeza que deseja cancelar o seu jogo? Esta ação não pode ser desfeita.</p>
+            {cancelError && (
+              <p className="text-red-400 text-sm mb-4">{cancelError}</p>
+            )}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setSlotToCancel(null)}
+                disabled={isCanceling}
+                className="flex-1 py-3 bg-transparent border border-slate-600 text-ct-muted rounded-xl font-bold hover:border-slate-400 hover:text-ct-text transition-all cursor-pointer disabled:opacity-50"
+              >
+                Voltar
+              </button>
+              <button
+                onClick={confirmCancel}
+                disabled={isCanceling}
+                className="flex-1 py-3 bg-red-500/20 text-red-500 font-black rounded-xl hover:bg-red-500/30 border border-red-500/50 transition-all cursor-pointer shadow-lg disabled:opacity-70"
+              >
+                {isCanceling ? "Cancelando..." : "Cancelar Jogo ✓"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
