@@ -5,7 +5,7 @@ import { prisma } from "../lib/prisma.js";
 export class UserController {
   async create(req: Request, res: Response) {
     try {
-      const { name, email, password } = req.body;
+      const { name, email, password, phone } = req.body;
 
       const userExists = await prisma.user.findUnique({
         where: { email },
@@ -28,6 +28,7 @@ export class UserController {
           name,
           email,
           password: hashedPassword,
+          phone: phone || null,
         },
       });
 

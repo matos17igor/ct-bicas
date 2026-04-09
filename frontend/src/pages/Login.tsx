@@ -18,6 +18,7 @@ export function Login() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
   const [successMsg, setSuccessMsg] = useState("");
@@ -54,7 +55,7 @@ export function Login() {
     setSuccessMsg("");
 
     try {
-      await api.post("/users", { name, email, password });
+      await api.post("/users", { name, email, password, phone });
 
       setIsRegistering(false);
       setSuccessMsg(
@@ -106,6 +107,20 @@ export function Login() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="Seu nome"
+                className="w-full px-5 py-3.5 bg-ct-card border border-slate-700 rounded-xl text-ct-text placeholder:text-slate-500 focus:ring-2 focus:ring-ct-gold/50 focus:border-ct-gold transition-all outline-none"
+              />
+            </div>
+          )}
+          {isRegistering && (
+            <div className="animate-fade-in">
+              <label className="text-sm font-semibold text-ct-text block mb-2">
+                Celular (WhatsApp)
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="(99) 99999-9999"
                 className="w-full px-5 py-3.5 bg-ct-card border border-slate-700 rounded-xl text-ct-text placeholder:text-slate-500 focus:ring-2 focus:ring-ct-gold/50 focus:border-ct-gold transition-all outline-none"
               />
             </div>
