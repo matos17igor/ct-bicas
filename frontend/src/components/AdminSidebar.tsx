@@ -45,19 +45,7 @@ export function AdminSidebar() {
         </button>
 
         <button
-          onClick={() => alert("Em breve: Tela de gerenciar quadras!")}
-          className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left font-semibold transition-colors cursor-pointer text-lg
-            ${
-              isActive("/admin/courts")
-                ? "bg-ct-card text-ct-gold"
-                : "text-slate-400 hover:bg-ct-card hover:text-ct-gold hover:shadow-sm"
-            }`}
-        >
-          <span className="text-2xl opacity-90">🏟️</span> Gerenciar Quadras
-        </button>
-
-        <button
-          onClick={() => alert("Em breve: Bloquear horários para manutenção!")}
+          onClick={() => navigate("/admin/block")}
           className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left font-semibold transition-colors cursor-pointer text-lg
             ${
               isActive("/admin/block")
@@ -65,7 +53,7 @@ export function AdminSidebar() {
                 : "text-slate-400 hover:bg-ct-card hover:text-ct-gold hover:shadow-sm"
             }`}
         >
-          <span className="text-2xl opacity-90">📅</span> Bloquear Horários
+          <span className="text-2xl opacity-90">🔒</span> Bloquear Horários
         </button>
       </nav>
 

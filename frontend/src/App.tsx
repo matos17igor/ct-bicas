@@ -5,6 +5,7 @@ import { Courts } from "./pages/Courts";
 import { Schedule } from "./pages/Schedule";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { Profile } from "./pages/Profile";
+import { AdminBlock } from "./pages/AdminBlock";
 
 import type { JSX } from "react";
 
@@ -58,6 +59,15 @@ export function App() {
           element={
             <PrivateRoute>
               <Profile />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin/block"
+          element={
+            <PrivateRoute>
+              <AdminBlock />
             </PrivateRoute>
           }
         />

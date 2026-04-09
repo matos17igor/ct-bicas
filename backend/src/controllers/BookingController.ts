@@ -90,7 +90,7 @@ export class BookingController {
       const userId = req.userId as string;
 
       const bookings = await prisma.booking.findMany({
-        where: { userId, endTime: { gt: new Date() } },
+        where: { userId, endTime: { gt: new Date() }, isBlocked: false },
         include: {
           court: true,
         },
@@ -182,9 +182,12 @@ export class BookingController {
       }
 
       // Busca dados do cliente que fez o agendamento
-      const bookingOwner = await prisma.user.findUnique({
-        where: { id: booking.userId },
-      });
+      let bookingOwner = null;
+      if (booking.userId) {
+        bookingOwner = await prisma.user.findUnique({
+          where: { id: booking.userId },
+        });
+      }
 
       await prisma.booking.delete({ where: { id } });
 
@@ -194,7 +197,7 @@ export class BookingController {
       if (bookingOwner) {
         sendBookingCancelledToClient({
           clientName: bookingOwner.name,
-          clientEmail: bookingOwner.email,
+          clientEmail: bookingOwner.email ?? "",
           courtName: booking.court.name,
           date: booking.date.toISOString(),
           startTime: booking.startTime.toISOString(),
@@ -214,7 +217,7 @@ export class BookingController {
   indexAll = async (req: Request, res: Response) => {
     try {
       const bookings = await prisma.booking.findMany({
-        where: { endTime: { gt: new Date() } },
+        where: { endTime: { gt: new Date() }, isBlocked: false },
         include: {
           court: true, // Traz os dados da quadra
           user: {

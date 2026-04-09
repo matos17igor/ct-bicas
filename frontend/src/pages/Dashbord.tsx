@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
-import logoCt from "../assets/ct-bicas-removebg-preview.png";
 import { UserSidebar } from "../components/UserSidebar";
 
 interface Booking {
