@@ -57,7 +57,7 @@ export function AdminDashboard() {
   }
 
   function formatDate(isoString: string) {
-    return new Date(isoString).toLocaleDateString("pt-BR");
+    return new Date(isoString).toLocaleDateString("pt-BR", { timeZone: "UTC" });
   }
 
   function formatTime(isoString: string) {

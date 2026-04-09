@@ -50,7 +50,7 @@ export function Dashboard() {
 
   // Função simples para formatar a data que vem do banco
   function formatDate(isoString: string) {
-    return new Date(isoString).toLocaleDateString("pt-BR");
+    return new Date(isoString).toLocaleDateString("pt-BR", { timeZone: "UTC" });
   }
 
   // Função para pegar só a hora da string do banco
