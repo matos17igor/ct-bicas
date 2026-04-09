@@ -77,7 +77,7 @@ export async function sendBookingAlertToOwner(data: {
   endTime: string;
 }) {
   const ownerEmail = process.env.OWNER_EMAIL;
-  if (!ownerEmail) return; // Se não configurado, não envia
+  if (!ownerEmail) return;
 
   const dateFormatted = formatDateBR(data.date);
   const startFormatted = formatTimeBR(data.startTime);
@@ -96,6 +96,49 @@ export async function sendBookingAlertToOwner(data: {
         <p><strong>Quadra:</strong> ${data.courtName}</p>
         <p><strong>Data:</strong> ${dateFormatted}</p>
         <p><strong>Horário:</strong> ${startFormatted}</p>
+      </div>
+    `,
+  });
+}
+
+// E-mail de CANCELAMENTO para o cliente
+export async function sendBookingCancelledToClient(data: {
+  clientName: string;
+  clientEmail: string;
+  courtName: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+}) {
+  const dateFormatted = formatDateBR(data.date);
+  const startFormatted = formatTimeBR(data.startTime);
+  const endFormatted = formatTimeBR(data.endTime);
+
+  await transporter.sendMail({
+    from: `"CT Bicas 🎾" <${process.env.SMTP_USER}>`,
+    to: data.clientEmail,
+    subject: `❌ Reserva Cancelada — CT Bicas`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; background: #0f172a; color: #e2e8f0; border-radius: 16px; overflow: hidden;">
+        <div style="background: #7f1d1d; padding: 28px 32px; text-align: center;">
+          <h1 style="margin: 0; color: #fecaca; font-size: 24px; font-weight: 900;">🎾 CT BICAS</h1>
+          <p style="margin: 6px 0 0; color: #fca5a5; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Reserva Cancelada</p>
+        </div>
+
+        <div style="padding: 32px;">
+          <p style="font-size: 18px; font-weight: 700; margin: 0 0 16px;">Olá, ${data.clientName}.</p>
+          <p style="color: #94a3b8; margin: 0 0 28px; font-size: 15px;">Sua reserva foi cancelada. Se precisar, faça um novo agendamento pelo sistema.</p>
+
+          <div style="background: #1e293b; border-radius: 12px; padding: 24px; border-left: 4px solid #ef4444;">
+            <p style="margin: 0 0 12px; font-size: 14px; color: #94a3b8;">📍 <strong style="color: #e2e8f0;">Quadra:</strong> ${data.courtName}</p>
+            <p style="margin: 0 0 12px; font-size: 14px; color: #94a3b8;">📅 <strong style="color: #e2e8f0;">Data:</strong> ${dateFormatted}</p>
+            <p style="margin: 0; font-size: 14px; color: #94a3b8;">🕒 <strong style="color: #e2e8f0;">Horário:</strong> ${startFormatted} às ${endFormatted}</p>
+          </div>
+        </div>
+
+        <div style="padding: 20px 32px; border-top: 1px solid #1e293b; text-align: center;">
+          <p style="margin: 0; font-size: 12px; color: #334155;">CT Bicas · Arena de Beach Tennis &amp; Futevôlei</p>
+        </div>
       </div>
     `,
   });
