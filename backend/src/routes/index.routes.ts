@@ -5,20 +5,20 @@ import { CourtController } from "../controllers/CourtController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { adminMiddleware } from "../middlewares/adminMiddleware.js";
 import { BookingController } from "../controllers/BookingController.js";
+import { ProfileController } from "../controllers/ProfileController.js";
 
 const router = Router();
 const userController = new UserController();
 const auhtController = new AuhtController();
 const courtController = new CourtController();
 const bookingController = new BookingController();
+const profileController = new ProfileController();
 
 router.post("/users", userController.create);
 router.post("/login", auhtController.login);
-router.get("/me", authMiddleware, async (req: any, res) => {
-  return res.json({
-    message: `Voce esta autenticado! Seu id e: ${req.userId}`,
-  });
-});
+router.get("/me", authMiddleware, profileController.getMe);
+router.patch("/me", authMiddleware, profileController.updateMe);
+router.patch("/me/password", authMiddleware, profileController.updatePassword);
 
 router.post("/courts", authMiddleware, adminMiddleware, courtController.create);
 router.get("/courts", courtController.index);
