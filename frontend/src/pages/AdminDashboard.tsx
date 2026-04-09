@@ -40,6 +40,22 @@ export function AdminDashboard() {
     fetchAllBookings();
   }, []);
 
+  async function handleCancelBooking(id: string) {
+    const confirmDelete = window.confirm(
+      "Tem certeza que deseja cancelar esta reserva?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await api.delete(`/bookings/${id}`);
+      setBookings(bookings.filter((b) => b.id !== id));
+      alert("Reserva cancelada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao cancelar reserva:", error);
+      alert("Não foi possível cancelar a reserva. Tente novamente.");
+    }
+  }
+
   function formatDate(isoString: string) {
     return new Date(isoString).toLocaleDateString("pt-BR");
   }
@@ -128,8 +144,16 @@ export function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="text-right text-xs text-slate-500 font-mono bg-ct-dark px-3 py-2 rounded-lg self-start md:self-center whitespace-nowrap border border-slate-800">
-                    ID: {booking.id.slice(0, 8)}
+                  <div className="flex flex-col items-end gap-2 self-start md:self-center">
+                    <div className="text-right text-xs text-slate-500 font-mono bg-ct-dark px-3 py-2 rounded-lg whitespace-nowrap border border-slate-800">
+                      ID: {booking.id.slice(0, 8)}
+                    </div>
+                    <button
+                      onClick={() => handleCancelBooking(booking.id)}
+                      className="px-4 py-2 bg-transparent text-red-400 border border-red-500/30 rounded-xl text-xs font-bold cursor-pointer transition-all duration-200 hover:bg-red-500/10 hover:border-red-400 whitespace-nowrap"
+                    >
+                      Cancelar Horario
+                    </button>
                   </div>
                 </div>
               ))}
