@@ -29,6 +29,10 @@ export function AdminBlock() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const [slotToUnblock, setSlotToUnblock] = useState<string | null>(null);
+  const [isUnblocking, setIsUnblocking] = useState(false);
+  const [unblockError, setUnblockError] = useState("");
+
   const now = new Date();
   const localToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
@@ -77,21 +81,31 @@ export function AdminBlock() {
     }
   }
 
-  async function handleUnblock(id: string) {
-    if (!confirm("Desbloquear este horário?")) return;
+  function handleUnblock(id: string) {
+    setSlotToUnblock(id);
+    setUnblockError("");
+  }
+
+  async function confirmUnblock() {
+    if (!slotToUnblock) return;
+    setIsUnblocking(true);
+    setUnblockError("");
     try {
-      await api.delete(`/admin/blocked-slots/${id}`);
-      setSlots(slots.filter((s) => s.id !== id));
+      await api.delete(`/admin/blocked-slots/${slotToUnblock}`);
+      setSlots(slots.filter((s) => s.id !== slotToUnblock));
+      setSlotToUnblock(null);
     } catch {
-      alert("Erro ao desbloquear.");
+      setUnblockError("Não foi possível desbloquear o horário.");
+    } finally {
+      setIsUnblocking(false);
     }
   }
 
   function formatDateBR(iso: string) {
-    return new Date(iso).toLocaleDateString("pt-BR", { timeZone: "UTC" });
+    return new Date(iso).toLocaleDateString("pt-BR");
   }
   function formatTimeBR(iso: string) {
-    return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
+    return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
   }
 
   return (
@@ -246,6 +260,40 @@ export function AdminBlock() {
           </div>
         </div>
       </main>
+
+      {/* Modal de Confirmação de Desbloqueio */}
+      {slotToUnblock && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => !isUnblocking && setSlotToUnblock(null)}
+          />
+          <div className="relative z-10 bg-ct-card border border-slate-700 rounded-3xl shadow-2xl w-full max-w-md p-8 animate-fade-in text-center">
+            <span className="text-5xl">🔓</span>
+            <h3 className="text-2xl font-black text-ct-text mt-4">Confirmar Desbloqueio</h3>
+            <p className="text-ct-muted text-sm mt-2 mb-8">Tem certeza que deseja liberar este horário na agenda?</p>
+            {unblockError && (
+              <p className="text-red-400 text-sm mb-4">{unblockError}</p>
+            )}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setSlotToUnblock(null)}
+                disabled={isUnblocking}
+                className="flex-1 py-3 bg-transparent border border-slate-600 text-ct-muted rounded-xl font-bold hover:border-slate-400 hover:text-ct-text transition-all cursor-pointer disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmUnblock}
+                disabled={isUnblocking}
+                className="flex-1 py-3 bg-red-500/20 text-red-500 font-black rounded-xl hover:bg-red-500/30 border border-red-500/50 transition-all cursor-pointer shadow-lg disabled:opacity-70"
+              >
+                {isUnblocking ? "Liberando..." : "Desbloquear ✓"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
