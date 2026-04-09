@@ -28,8 +28,13 @@ export function Schedule() {
         const response = await api.get(`/courts/${courtId}/bookings`, {
           params: { date },
         });
-        const occupied = response.data.map((booking: any) => {
-          return new Date(booking.startTime).getHours();
+        const occupied: number[] = [];
+        response.data.forEach((booking: any) => {
+          const startHour = new Date(booking.startTime).getHours();
+          const endHour = new Date(booking.endTime).getHours();
+          for (let h = startHour; h < endHour; h++) {
+            occupied.push(h);
+          }
         });
         setBookedHours(occupied);
         setSelectedHour(null);
