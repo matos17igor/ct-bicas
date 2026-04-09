@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../lib/prisma.js";
 import { AuthRequest } from "../middlewares/authMiddleware.js";
+import {
+  sendBookingConfirmedToClient,
+  sendBookingAlertToOwner,
+} from "../services/EmailService.js";
 
 export class BookingController {
   create = async (req: AuthRequest, res: Response) => {
@@ -51,6 +55,29 @@ export class BookingController {
       });
 
       res.status(201).json(booking);
+
+      // Dispara emails em background (não bloqueia a resposta)
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      console.log("📧 Tentando enviar email para:", user?.email);
+      if (user) {
+        const emailData = {
+          clientName: user.name,
+          clientEmail: user.email,
+          clientPhone: user.phone,
+          courtName: court.name,
+          date: booking.date.toISOString(),
+          startTime: booking.startTime.toISOString(),
+          endTime: booking.endTime.toISOString(),
+        };
+        sendBookingConfirmedToClient(emailData)
+          .then(() => console.log("✅ Email cliente enviado!"))
+          .catch((err) => console.error("❌ Erro email cliente:", err.message));
+        sendBookingAlertToOwner(emailData)
+          .then(() => console.log("✅ Email dono enviado!"))
+          .catch((err) => console.error("❌ Erro email dono:", err.message));
+      } else {
+        console.log("❌ Usuário não encontrado para envio de email");
+      }
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Erro ao realizar agendamento" });
@@ -159,7 +186,8 @@ export class BookingController {
           user: {
             select: {
               name: true,
-              email: true, // Traz o contato do cliente
+              email: true,
+              phone: true,
             },
           },
         },
