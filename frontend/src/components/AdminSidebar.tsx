@@ -62,7 +62,7 @@ export function AdminSidebar() {
           onClick={handleLogout}
           className="w-full flex items-center justify-center gap-2.5 px-4 py-3 bg-red-950/20 text-red-400 rounded-xl hover:bg-red-950/40 hover:text-red-300 transition-colors cursor-pointer font-bold"
         >
-          <span>🚪</span> Sair do Sistema
+          <span>🚪</span> Sair
         </button>
       </div>
     </aside>

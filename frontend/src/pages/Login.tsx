@@ -340,7 +340,7 @@ export function Login() {
               disabled={isLoading}
               className="w-full mt-2 bg-ct-gold text-ct-dark font-bold py-4 px-6 rounded-xl hover:bg-ct-gold-hover focus:outline-none focus:ring-4 focus:ring-ct-gold/30 transition-all duration-150 cursor-pointer text-lg shadow-lg shadow-ct-gold/20 disabled:opacity-75"
             >
-              {isLoading ? "Aguarde..." : (isRegistering ? "Cadastrar" : "Entrar no Sistema")}
+              {isLoading ? "Aguarde..." : (isRegistering ? "Cadastrar" : "Entrar")}
             </button>
           </form>
         )}

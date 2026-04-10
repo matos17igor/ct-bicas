@@ -12,7 +12,7 @@ interface AdminBooking {
     name: string;
   };
   user: {
-    name: string;
+    name: string ;
     email: string;
     phone?: string | null;
   };
@@ -144,14 +144,16 @@ export function AdminDashboard() {
                         <span className="flex items-center gap-2">
                           <span className="text-ct-gold text-base">👤</span>{" "}
                           <strong className="text-ct-text font-medium">
-                            {booking.user.name}
+                            {booking.user?.name || "Usuário Removido"}
                           </strong>
                         </span>
-                        <span className="flex items-center gap-2">
-                          <span className="text-ct-gold text-base">✉️</span>{" "}
-                          {booking.user.email}
-                        </span>
-                        {booking.user.phone && (
+                        {booking.user?.email && (
+                          <span className="flex items-center gap-2">
+                            <span className="text-ct-gold text-base">✉️</span>{" "}
+                            {booking.user.email}
+                          </span>
+                        )}
+                        {booking.user?.phone && (
                           <span className="flex items-center gap-2">
                             <span className="text-ct-gold text-base">📱</span>{" "}
                             {booking.user.phone}

@@ -15,6 +15,7 @@ interface BlockedSlot {
   startTime: string;
   endTime: string;
   reason: string | null;
+  recurringGroupId?: string | null;
 }
 
 export function AdminBlock() {
@@ -26,10 +27,11 @@ export function AdminBlock() {
   const [startHour, setStartHour] = useState("");
   const [endHour, setEndHour] = useState("");
   const [reason, setReason] = useState("");
+  const [isWeekly, setIsWeekly] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const [slotToUnblock, setSlotToUnblock] = useState<string | null>(null);
+  const [slotToUnblock, setSlotToUnblock] = useState<{id: string, isSeries?: boolean} | null>(null);
   const [isUnblocking, setIsUnblocking] = useState(false);
   const [unblockError, setUnblockError] = useState("");
 
@@ -70,19 +72,20 @@ export function AdminBlock() {
       const startTime = new Date(`${date}T${startHour.padStart(2, "0")}:00:00`).toISOString();
       const endTime = new Date(`${date}T${endHour.padStart(2, "0")}:00:00`).toISOString();
 
-      await api.post("/admin/blocked-slots", { courtId, date, startTime, endTime, reason });
+      await api.post("/admin/blocked-slots", { courtId, date, startTime, endTime, reason, isWeekly });
       setSuccess("Horário bloqueado com sucesso!");
       setStartHour("");
       setEndHour("");
       setReason("");
+      setIsWeekly(false);
       fetchSlots();
     } catch (err: any) {
       setError(err.response?.data?.error || "Erro ao bloquear horário.");
     }
   }
 
-  function handleUnblock(id: string) {
-    setSlotToUnblock(id);
+  function handleUnblock(id: string, isSeries?: boolean) {
+    setSlotToUnblock({ id, isSeries });
     setUnblockError("");
   }
 
@@ -91,8 +94,12 @@ export function AdminBlock() {
     setIsUnblocking(true);
     setUnblockError("");
     try {
-      await api.delete(`/admin/blocked-slots/${slotToUnblock}`);
-      setSlots(slots.filter((s) => s.id !== slotToUnblock));
+      if (slotToUnblock.isSeries) {
+        await api.delete(`/admin/blocked-slots/${slotToUnblock.id}?deleteAll=true`);
+      } else {
+        await api.delete(`/admin/blocked-slots/${slotToUnblock.id}`);
+      }
+      fetchSlots();
       setSlotToUnblock(null);
     } catch {
       setUnblockError("Não foi possível desbloquear o horário.");
@@ -200,6 +207,16 @@ export function AdminBlock() {
               />
             </div>
 
+            <label className="flex items-center gap-3 cursor-pointer p-4 border border-slate-700 rounded-xl hover:bg-white/5 transition-colors">
+              <input
+                type="checkbox"
+                checked={isWeekly}
+                onChange={(e) => setIsWeekly(e.target.checked)}
+                className="w-5 h-5 accent-ct-gold cursor-pointer"
+              />
+              <span className="text-sm font-semibold text-ct-text">Repetir semanalmente no mesmo dia da semana (Série de aprox. 6 meses)</span>
+            </label>
+
             {error && (
               <div className="p-4 rounded-xl text-sm font-medium bg-red-950/50 text-red-300 border border-red-800">
                 ⚠️ {error}
@@ -229,32 +246,54 @@ export function AdminBlock() {
               </div>
             ) : (
               <div className="flex flex-col gap-4">
-                {slots.map((slot) => (
-                  <div
-                    key={slot.id}
-                    className="bg-ct-card p-5 rounded-2xl border border-slate-700 flex items-center justify-between gap-4"
-                  >
-                    <div className="flex items-center gap-5">
-                      <div className="bg-ct-dark text-ct-gold font-black p-4 rounded-xl border border-ct-gold/20 text-center min-w-[90px]">
-                        <div className="text-xs opacity-70 mb-1">{formatDateBR(slot.date).slice(0, 5)}</div>
-                        <div className="text-lg">{formatTimeBR(slot.startTime)}</div>
-                      </div>
-                      <div>
-                        <p className="font-bold text-ct-text">{slot.court.name}</p>
-                        <p className="text-sm text-ct-muted">
-                          {formatTimeBR(slot.startTime)} às {formatTimeBR(slot.endTime)}
-                          {slot.reason && <span className="ml-2 opacity-70">· {slot.reason}</span>}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleUnblock(slot.id)}
-                      className="px-4 py-2 text-xs font-bold text-red-400 border border-red-500/30 rounded-xl hover:bg-red-500/10 transition-all cursor-pointer whitespace-nowrap"
+                {(() => {
+                  const displaySlots: (BlockedSlot & { isSeries?: boolean })[] = [];
+                  const seenSeries = new Set<string>();
+
+                  for (const slot of slots) {
+                    if (slot.recurringGroupId) {
+                      if (seenSeries.has(slot.recurringGroupId)) continue;
+                      seenSeries.add(slot.recurringGroupId);
+                      displaySlots.push({ ...slot, isSeries: true });
+                    } else {
+                      displaySlots.push(slot);
+                    }
+                  }
+
+                  return displaySlots.map((slot) => (
+                    <div
+                      key={slot.id}
+                      className="bg-ct-card p-5 rounded-2xl border border-slate-700 flex items-center justify-between gap-4"
                     >
-                      Desbloquear
-                    </button>
-                  </div>
-                ))}
+                      <div className="flex items-center gap-5">
+                        <div className="bg-ct-dark text-ct-gold font-black p-4 rounded-xl border border-ct-gold/20 text-center min-w-[90px]">
+                          <div className="text-xs opacity-70 mb-1">{formatDateBR(slot.date).slice(0, 5)}</div>
+                          <div className="text-lg">{formatTimeBR(slot.startTime)}</div>
+                        </div>
+                        <div>
+                          <p className="font-bold text-ct-text">
+                            {slot.court.name}
+                            {slot.isSeries && (
+                              <span className="ml-3 inline-block px-2 py-0.5 bg-ct-gold/20 text-ct-gold text-xs font-bold rounded-full border border-ct-gold/50">
+                                Série Semanal
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-sm text-ct-muted">
+                            {formatTimeBR(slot.startTime)} às {formatTimeBR(slot.endTime)}
+                            {slot.reason && <span className="ml-2 opacity-70">· {slot.reason}</span>}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleUnblock(slot.id, slot.isSeries)}
+                        className="px-4 py-2 text-xs font-bold text-red-400 border border-red-500/30 rounded-xl hover:bg-red-500/10 transition-all cursor-pointer whitespace-nowrap"
+                      >
+                        {slot.isSeries ? "Remover Série" : "Desbloquear"}
+                      </button>
+                    </div>
+                  ));
+                })()}
               </div>
             )}
           </div>
@@ -270,8 +309,12 @@ export function AdminBlock() {
           />
           <div className="relative z-10 bg-ct-card border border-slate-700 rounded-3xl shadow-2xl w-full max-w-md p-8 animate-fade-in text-center">
             <span className="text-5xl">🔓</span>
-            <h3 className="text-2xl font-black text-ct-text mt-4">Confirmar Desbloqueio</h3>
-            <p className="text-ct-muted text-sm mt-2 mb-8">Tem certeza que deseja liberar este horário na agenda?</p>
+            <h3 className="text-2xl font-black text-ct-text mt-4">Confirmar Liberação</h3>
+            <p className="text-ct-muted text-sm mt-2 mb-8">
+              {slotToUnblock.isSeries 
+                ? "Atenção: Isso vai liberar TODOS os horários bloqueados que fazem parte desta série semanal (pelos próximos 6 meses). Tem certeza?" 
+                : "Tem certeza que deseja liberar este horário específico na agenda?"}
+            </p>
             {unblockError && (
               <p className="text-red-400 text-sm mb-4">{unblockError}</p>
             )}
