@@ -23,6 +23,13 @@ export class AuthController {
         return res.status(401).json({ error: "Email ou senha incorretos" });
       }
 
+      if (!user.isVerified) {
+        return res.status(403).json({ 
+          code: "UNVERIFIED",
+          error: "Sua conta não foi confirmada. Redirecionando para verificação..."
+        });
+      }
+
       // Gera o JWT
       const secret = process.env.JWT_SECRET as string;
       if (!secret) {

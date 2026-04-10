@@ -56,6 +56,18 @@ export function Login() {
       }
     } catch (err: any) {
       console.error(err);
+      if (err.response?.data?.code === "UNVERIFIED") {
+        setVerifyEmailTarget(email);
+        setShowVerifyModal(true);
+        setError("Sua conta não confirmada. Novo código enviado ao seu e-mail.");
+        try {
+          await api.post("/auth/resend-code", { email });
+        } catch (resendErr) {
+          console.error("Erro ao reenviar código:", resendErr);
+        }
+        setIsLoading(false);
+        return;
+      }
       setError(err.response?.data?.error || "E-mail ou senha inválidos. Tente novamente.");
     } finally {
       setIsLoading(false);
@@ -275,13 +287,16 @@ export function Login() {
             {isRegistering && (
               <div className="animate-fade-in">
                 <label className="text-sm font-semibold text-ct-text block mb-2">
-                  Celular (WhatsApp)
+                  Celular (WhatsApp com DDD)
                 </label>
                 <input
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="(99) 99999-9999"
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 11))}
+                  placeholder="Ex: (32) 99999-9999"
+                  maxLength={11}
+                  minLength={11}
+                  required
                   className="w-full px-5 py-3.5 bg-ct-card border border-slate-700 rounded-xl text-ct-text placeholder:text-slate-500 focus:ring-2 focus:ring-ct-gold/50 focus:border-ct-gold transition-all outline-none"
                 />
               </div>

@@ -27,7 +27,7 @@ export function Home() {
 
           <button 
             onClick={() => navigate("/login")}
-            className="px-6 py-2.5 bg-ct-gold hover:bg-ct-gold-hover text-ct-dark font-black rounded-xl transition-all shadow-lg shadow-ct-gold/20"
+            className="px-6 py-2.5 bg-ct-gold hover:bg-ct-gold-hover text-ct-dark font-black rounded-xl transition-all shadow-lg shadow-ct-gold/20 cursor-pointer"
           >
             Agendar Horário
           </button>
@@ -59,7 +59,7 @@ export function Home() {
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <button 
                 onClick={() => navigate("/login")}
-                className="w-full sm:w-auto px-8 py-4 bg-ct-gold hover:bg-ct-gold-hover text-ct-dark font-black text-xl rounded-2xl transition-all transform hover:-translate-y-1 shadow-xl shadow-ct-gold/20"
+                className="w-full sm:w-auto px-8 py-4 bg-ct-gold hover:bg-ct-gold-hover text-ct-dark font-black text-xl rounded-2xl transition-all transform hover:-translate-y-1 shadow-xl shadow-ct-gold/20 cursor-pointer"
               >
                 Reservar Minha Quadra →
               </button>

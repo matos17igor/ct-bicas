@@ -8,6 +8,10 @@ export class UserController {
     try {
       const { name, email, password, phone } = req.body;
 
+      if (phone && !/^\d{11}$/.test(phone)) {
+        return res.status(400).json({ error: "O WhatsApp deve conter exatamente 11 dígitos numéricos com DDD (Ex: 32999999999)." });
+      }
+
       const userExists = await prisma.user.findUnique({
         where: { email },
       });
