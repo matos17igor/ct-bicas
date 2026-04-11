@@ -109,7 +109,7 @@ export function AdminBlock() {
   }
 
   function formatDateBR(iso: string) {
-    return new Date(iso).toLocaleDateString("pt-BR");
+    return new Date(iso).toLocaleDateString("pt-BR", { timeZone: "UTC" });
   }
   function formatTimeBR(iso: string) {
     return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });

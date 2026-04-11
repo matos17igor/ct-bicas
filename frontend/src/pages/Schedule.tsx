@@ -77,7 +77,8 @@ export function Schedule() {
 
   // Formata a data para exibição no modal
   function formatDateBR(d: string) {
-    return new Date(d + "T00:00:00").toLocaleDateString("pt-BR", {
+    return new Date(d + "T00:00:00Z").toLocaleDateString("pt-BR", {
+      timeZone: "UTC",
       weekday: "long",
       day: "2-digit",
       month: "long",

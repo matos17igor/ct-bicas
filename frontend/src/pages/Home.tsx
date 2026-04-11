@@ -22,6 +22,7 @@ export function Home() {
 
           <nav className="hidden md:flex gap-8 font-semibold text-sm text-slate-300">
             <a href="#esportes" className="hover:text-ct-gold transition-colors">Esportes</a>
+            <a href="#aula-experimental" className="hover:text-ct-gold transition-colors">Aula experimental</a>
             <a href="#contato" className="hover:text-ct-gold transition-colors">Contato</a>
           </nav>
 
@@ -110,7 +111,7 @@ export function Home() {
       </section>
 
       {/* 3.5 AULAS EXPERIMENTAIS */}
-      <section className="py-24 px-6 bg-ct-gold text-ct-dark border-y border-ct-gold/50 relative overflow-hidden">
+      <section id="aula-experimental" className="py-24 px-6 bg-ct-gold text-ct-dark border-y border-ct-gold/50 relative overflow-hidden">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between relative z-10 gap-12">
           <div className="md:w-1/2">
             <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">Quer aprender a jogar com os melhores?</h2>
