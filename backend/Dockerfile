@@ -19,5 +19,5 @@ RUN DATABASE_URL="postgres://fake:fake@localhost:5432/fake" npx prisma generate
 # 7. Avisa que o contêiner vai abrir a porta 3000 (a mesma usada no Express e no frontend)
 EXPOSE 3000
 
-# 8. O comando que liga a API
-CMD ["npm", "run", "dev"]
+# 8. Roda as migrations, seed do admin, e depois liga a API
+CMD sh -c "npx prisma db push && npx prisma db seed && npm run dev"
