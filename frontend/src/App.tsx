@@ -7,6 +7,7 @@ import { Schedule } from "./pages/Schedule";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import { Profile } from "./pages/Profile";
 import { AdminBlock } from "./pages/AdminBlock";
+import { AdminCourts } from "./pages/AdminCourts";
 
 import type { JSX } from "react";
 
@@ -73,6 +74,7 @@ export function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/admin/quadras" element={<AdminCourts />} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

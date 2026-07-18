@@ -55,6 +55,18 @@ export function AdminSidebar() {
         >
           <span className="text-2xl opacity-90">🔒</span> Bloquear Horários
         </button>
+
+        <button
+          onClick={() => navigate("/admin/quadras")}
+          className={`flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-left font-semibold transition-colors cursor-pointer text-lg
+            ${
+              isActive("/admin/quadras")
+                ? "bg-ct-card text-ct-gold shadow-md"
+                : "text-slate-400 hover:bg-ct-card hover:text-ct-gold hover:shadow-sm"
+            }`}
+        >
+          <span className="text-2xl opacity-90">🎾</span> Gerenciar Quadras
+        </button>
       </nav>
 
       <div className="p-5 mt-auto border-t border-slate-300/10">

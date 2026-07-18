@@ -31,12 +31,17 @@ export function AdminBlock() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const [slotToUnblock, setSlotToUnblock] = useState<{id: string, isSeries?: boolean} | null>(null);
+  const [slotToUnblock, setSlotToUnblock] = useState<{
+    id: string;
+    isSeries?: boolean;
+  } | null>(null);
   const [isUnblocking, setIsUnblocking] = useState(false);
   const [unblockError, setUnblockError] = useState("");
 
   const now = new Date();
-  const localToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const localToday = `${now.getFullYear()}-${String(
+    now.getMonth() + 1
+  ).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
 
   const operatingHours = Array.from({ length: 15 }, (_, i) => i + 8); // 8h a 22h
 
@@ -69,10 +74,21 @@ export function AdminBlock() {
     }
 
     try {
-      const startTime = new Date(`${date}T${startHour.padStart(2, "0")}:00:00`).toISOString();
-      const endTime = new Date(`${date}T${endHour.padStart(2, "0")}:00:00`).toISOString();
+      const startTime = new Date(
+        `${date}T${startHour.padStart(2, "0")}:00:00`
+      ).toISOString();
+      const endTime = new Date(
+        `${date}T${endHour.padStart(2, "0")}:00:00`
+      ).toISOString();
 
-      await api.post("/admin/blocked-slots", { courtId, date, startTime, endTime, reason, isWeekly });
+      await api.post("/admin/blocked-slots", {
+        courtId,
+        date,
+        startTime,
+        endTime,
+        reason,
+        isWeekly,
+      });
       setSuccess("Horário bloqueado com sucesso!");
       setStartHour("");
       setEndHour("");
@@ -95,7 +111,9 @@ export function AdminBlock() {
     setUnblockError("");
     try {
       if (slotToUnblock.isSeries) {
-        await api.delete(`/admin/blocked-slots/${slotToUnblock.id}?deleteAll=true`);
+        await api.delete(
+          `/admin/blocked-slots/${slotToUnblock.id}?deleteAll=true`
+        );
       } else {
         await api.delete(`/admin/blocked-slots/${slotToUnblock.id}`);
       }
@@ -112,7 +130,10 @@ export function AdminBlock() {
     return new Date(iso).toLocaleDateString("pt-BR", { timeZone: "UTC" });
   }
   function formatTimeBR(iso: string) {
-    return new Date(iso).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    return new Date(iso).toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   }
 
   return (
@@ -139,7 +160,9 @@ export function AdminBlock() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-semibold mb-2">Quadra</label>
+                <label className="block text-sm font-semibold mb-2">
+                  Quadra
+                </label>
                 <select
                   value={courtId}
                   onChange={(e) => setCourtId(e.target.value)}
@@ -148,7 +171,9 @@ export function AdminBlock() {
                 >
                   <option value="">Selecione uma quadra</option>
                   {courts.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -166,7 +191,9 @@ export function AdminBlock() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold mb-2">Início</label>
+                <label className="block text-sm font-semibold mb-2">
+                  Início
+                </label>
                 <select
                   value={startHour}
                   onChange={(e) => setStartHour(e.target.value)}
@@ -175,7 +202,9 @@ export function AdminBlock() {
                 >
                   <option value="">Horário de início</option>
                   {operatingHours.map((h) => (
-                    <option key={h} value={String(h)}>{h}:00</option>
+                    <option key={h} value={String(h)}>
+                      {h}:00
+                    </option>
                   ))}
                 </select>
               </div>
@@ -189,15 +218,21 @@ export function AdminBlock() {
                   className="w-full px-4 py-3 bg-ct-dark border border-slate-700 rounded-xl text-ct-text focus:ring-2 focus:ring-ct-gold/50 focus:border-ct-gold outline-none"
                 >
                   <option value="">Horário de fim</option>
-                  {operatingHours.filter((h) => !startHour || h > Number(startHour)).map((h) => (
-                    <option key={h} value={String(h)}>{h}:00</option>
-                  ))}
+                  {operatingHours
+                    .filter((h) => !startHour || h > Number(startHour))
+                    .map((h) => (
+                      <option key={h} value={String(h)}>
+                        {h}:00
+                      </option>
+                    ))}
                 </select>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-2">Motivo (opcional)</label>
+              <label className="block text-sm font-semibold mb-2">
+                Motivo (opcional)
+              </label>
               <input
                 type="text"
                 value={reason}
@@ -214,7 +249,10 @@ export function AdminBlock() {
                 onChange={(e) => setIsWeekly(e.target.checked)}
                 className="w-5 h-5 accent-ct-gold cursor-pointer"
               />
-              <span className="text-sm font-semibold text-ct-text">Repetir semanalmente no mesmo dia da semana (Série de aprox. 6 meses)</span>
+              <span className="text-sm font-semibold text-ct-text">
+                Repetir semanalmente no mesmo dia da semana (Série de aprox. 6
+                meses)
+              </span>
             </label>
 
             {error && (
@@ -238,16 +276,21 @@ export function AdminBlock() {
 
           {/* Lista de bloqueios */}
           <div>
-            <h3 className="text-xl font-bold mb-5 text-ct-text">Horários Bloqueados</h3>
+            <h3 className="text-xl font-bold mb-5 text-ct-text">
+              Horários Bloqueados
+            </h3>
             {slots.length === 0 ? (
               <div className="text-center py-16 bg-ct-card rounded-2xl border border-slate-800">
                 <span className="text-4xl opacity-50">🔓</span>
-                <p className="mt-4 text-ct-muted">Nenhum horário bloqueado no momento.</p>
+                <p className="mt-4 text-ct-muted">
+                  Nenhum horário bloqueado no momento.
+                </p>
               </div>
             ) : (
               <div className="flex flex-col gap-4">
                 {(() => {
-                  const displaySlots: (BlockedSlot & { isSeries?: boolean })[] = [];
+                  const displaySlots: (BlockedSlot & { isSeries?: boolean })[] =
+                    [];
                   const seenSeries = new Set<string>();
 
                   for (const slot of slots) {
@@ -267,8 +310,12 @@ export function AdminBlock() {
                     >
                       <div className="flex items-center gap-5">
                         <div className="bg-ct-dark text-ct-gold font-black p-4 rounded-xl border border-ct-gold/20 text-center min-w-[90px]">
-                          <div className="text-xs opacity-70 mb-1">{formatDateBR(slot.date).slice(0, 5)}</div>
-                          <div className="text-lg">{formatTimeBR(slot.startTime)}</div>
+                          <div className="text-xs opacity-70 mb-1">
+                            {formatDateBR(slot.date).slice(0, 5)}
+                          </div>
+                          <div className="text-lg">
+                            {formatTimeBR(slot.startTime)}
+                          </div>
                         </div>
                         <div>
                           <p className="font-bold text-ct-text">
@@ -280,8 +327,13 @@ export function AdminBlock() {
                             )}
                           </p>
                           <p className="text-sm text-ct-muted">
-                            {formatTimeBR(slot.startTime)} às {formatTimeBR(slot.endTime)}
-                            {slot.reason && <span className="ml-2 opacity-70">· {slot.reason}</span>}
+                            {formatTimeBR(slot.startTime)} às{" "}
+                            {formatTimeBR(slot.endTime)}
+                            {slot.reason && (
+                              <span className="ml-2 opacity-70">
+                                · {slot.reason}
+                              </span>
+                            )}
                           </p>
                         </div>
                       </div>
@@ -309,10 +361,12 @@ export function AdminBlock() {
           />
           <div className="relative z-10 bg-ct-card border border-slate-700 rounded-3xl shadow-2xl w-full max-w-md p-8 animate-fade-in text-center">
             <span className="text-5xl">🔓</span>
-            <h3 className="text-2xl font-black text-ct-text mt-4">Confirmar Liberação</h3>
+            <h3 className="text-2xl font-black text-ct-text mt-4">
+              Confirmar Liberação
+            </h3>
             <p className="text-ct-muted text-sm mt-2 mb-8">
-              {slotToUnblock.isSeries 
-                ? "Atenção: Isso vai liberar TODOS os horários bloqueados que fazem parte desta série semanal (pelos próximos 6 meses). Tem certeza?" 
+              {slotToUnblock.isSeries
+                ? "Atenção: Isso vai liberar TODOS os horários bloqueados que fazem parte desta série semanal (pelos próximos 6 meses). Tem certeza?"
                 : "Tem certeza que deseja liberar este horário específico na agenda?"}
             </p>
             {unblockError && (

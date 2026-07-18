@@ -28,6 +28,8 @@ router.patch("/me/password", authMiddleware, profileController.updatePassword);
 
 router.post("/courts", authMiddleware, adminMiddleware, courtController.create);
 router.get("/courts", courtController.index);
+router.put("/courts/:id", courtController.update);
+router.delete("/courts/:id", courtController.delete);
 
 router.post("/bookings", authMiddleware, bookingController.create);
 router.get("/me/bookings", authMiddleware, bookingController.indexByUser);
@@ -39,9 +41,24 @@ router.get(
   bookingController.indexAll
 );
 
-router.post("/admin/blocked-slots", authMiddleware, adminMiddleware, blockedSlotController.create);
-router.get("/admin/blocked-slots", authMiddleware, adminMiddleware, blockedSlotController.index);
-router.delete("/admin/blocked-slots/:id", authMiddleware, adminMiddleware, blockedSlotController.delete);
+router.post(
+  "/admin/blocked-slots",
+  authMiddleware,
+  adminMiddleware,
+  blockedSlotController.create
+);
+router.get(
+  "/admin/blocked-slots",
+  authMiddleware,
+  adminMiddleware,
+  blockedSlotController.index
+);
+router.delete(
+  "/admin/blocked-slots/:id",
+  authMiddleware,
+  adminMiddleware,
+  blockedSlotController.delete
+);
 
 router.get("/courts/:courtId/bookings", bookingController.listByCourtAndDate);
 

@@ -36,9 +36,14 @@ enum TokenType {
 }
 
 model Court {
-  id       String    @id @default(uuid())
-  name     String
+  id        String    @id @default(uuid())
+  name      String    @unique 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
   bookings Booking[]
+
+  @@map("Court")
 }
 
 model Booking {
