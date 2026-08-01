@@ -59,3 +59,30 @@ model Booking {
   reason    String?
   recurringGroupId String?
 }
+
+enum SportCategory {
+  BEACH_TENIS
+  FUTEVOLEI
+  VOLEI
+}
+
+enum TournamentStatus {
+  UPCOMING
+  IN_PROGRESS
+  FINISHED
+  CANCELED
+}
+
+model Tournament {
+  id        String   @id @default(uuid())
+  date      DateTime
+  startTime String
+  title     String
+  description String
+  category  SportCategory 
+  status    TournamentStatus @default(UPCOMING)
+  bannerUrl   String?          
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+}

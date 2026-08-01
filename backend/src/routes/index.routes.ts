@@ -7,6 +7,7 @@ import { adminMiddleware } from "../middlewares/adminMiddleware.js";
 import { BookingController } from "../controllers/BookingController.js";
 import { ProfileController } from "../controllers/ProfileController.js";
 import { BlockedSlotController } from "../controllers/BlockedSlotController.js";
+import { TournamentController } from "../controllers/TournamentController.js";
 
 const router = Router();
 const userController = new UserController();
@@ -15,6 +16,7 @@ const courtController = new CourtController();
 const bookingController = new BookingController();
 const profileController = new ProfileController();
 const blockedSlotController = new BlockedSlotController();
+const tournamentController = new TournamentController();
 
 router.post("/users", userController.create);
 router.post("/login", authController.login);
@@ -38,28 +40,35 @@ router.get(
   "/admin/bookings",
   authMiddleware,
   adminMiddleware,
-  bookingController.indexAll
+  bookingController.indexAll,
 );
 
 router.post(
   "/admin/blocked-slots",
   authMiddleware,
   adminMiddleware,
-  blockedSlotController.create
+  blockedSlotController.create,
 );
 router.get(
   "/admin/blocked-slots",
   authMiddleware,
   adminMiddleware,
-  blockedSlotController.index
+  blockedSlotController.index,
 );
 router.delete(
   "/admin/blocked-slots/:id",
   authMiddleware,
   adminMiddleware,
-  blockedSlotController.delete
+  blockedSlotController.delete,
 );
 
 router.get("/courts/:courtId/bookings", bookingController.listByCourtAndDate);
+
+router.post(
+  "/tournaments",
+  authMiddleware,
+  adminMiddleware,
+  tournamentController.createTournament,
+);
 
 export { router };
