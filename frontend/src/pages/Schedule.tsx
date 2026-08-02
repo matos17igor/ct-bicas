@@ -86,15 +86,15 @@ export function Schedule() {
   }
 
   return (
-    <div className="flex min-h-screen bg-ct-dark text-ct-text">
+    <div className="flex min-h-screen bg-ct-dark text-ct-text pt-14 md:pt-0">
       <UserSidebar />
 
       <main className="flex-1 p-8 md:p-12 overflow-y-auto">
-        <div className="max-w-4xl mx-auto bg-ct-card p-10 rounded-3xl shadow-2xl border border-slate-300/5">
-          <div className="flex items-center justify-between mb-10 pb-6 border-b border-slate-700">
+        <div className="max-w-4xl mx-auto bg-ct-card p-5 md:p-10 rounded-3xl shadow-2xl border border-slate-300/5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 pb-6 border-b border-slate-700 gap-3">
             <div className="flex items-center gap-3">
               <span className="text-3xl text-ct-gold">🕒</span>
-              <h2 className="text-3xl font-extrabold tracking-tight">
+              <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">
                 Reservar Horário
               </h2>
             </div>
@@ -164,12 +164,12 @@ export function Schedule() {
           </div>
 
           {selectedHour !== null && (
-            <div className="mt-12 pt-8 border-t border-slate-700 flex justify-end">
+            <div className="mt-12 pt-8 border-t border-slate-700 flex justify-center sm:justify-end">
               <button
                 onClick={handleOpenModal}
-                className="px-10 py-4 bg-ct-gold text-ct-dark font-black rounded-2xl hover:bg-ct-gold-hover transition-all duration-150 cursor-pointer text-xl shadow-2xl shadow-ct-gold/30 flex items-center gap-3"
+                className="w-full sm:w-auto px-6 md:px-10 py-4 bg-ct-gold text-ct-dark font-black rounded-2xl hover:bg-ct-gold-hover transition-all duration-150 cursor-pointer text-base md:text-xl shadow-2xl shadow-ct-gold/30 flex items-center justify-center gap-3"
               >
-                Confirmar Agendamento para as {selectedHour}:00h
+                Confirmar para as {selectedHour}:00h
               </button>
             </div>
           )}

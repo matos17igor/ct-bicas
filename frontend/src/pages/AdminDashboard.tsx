@@ -96,7 +96,7 @@ export function AdminDashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-ct-dark text-ct-text">
+    <div className="flex min-h-screen bg-ct-dark text-ct-text pt-14 md:pt-0">
       <AdminSidebar />
 
       <main className="flex-1 p-8 md:p-12 overflow-y-auto">
