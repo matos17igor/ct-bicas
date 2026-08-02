@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import logoCt from "../assets/ct-bicas-removebg-preview.png";
-import backgroundCt from "../assets/ct-background.jpeg";
+import backgroundCt from "../assets/ct-background2.png";
 import professorCt from "../assets/professorct.jpeg";
 import { InstagramEmbed } from 'react-social-media-embed';
 
@@ -36,7 +36,7 @@ export function Home() {
       </header>
 
       {/* 2. HERO SECTION */}
-      <section className="relative pt-32 pb-24 md:pt-48 md:pb-40 px-6 min-h-[90vh] flex items-center">
+      <section className="relative pt-32 pb-24 md:pt-48 md:pb-40 px-6 min-h-[100vh] flex items-center">
         {/* Background Image Fix */}
         <div className="absolute inset-0 z-0">
           <img src={backgroundCt} alt="Background da Arena" className="w-full h-full object-cover" />
