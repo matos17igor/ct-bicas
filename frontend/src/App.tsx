@@ -8,6 +8,8 @@ import { AdminDashboard } from "./pages/AdminDashboard";
 import { Profile } from "./pages/Profile";
 import { AdminBlock } from "./pages/AdminBlock";
 import { AdminCourts } from "./pages/AdminCourts";
+import { AdminTournaments } from "./pages/AdminTournaments";
+import { Tournaments } from "./pages/Tournaments";
 
 import type { JSX } from "react";
 
@@ -75,6 +77,23 @@ export function App() {
           }
         />
         <Route path="/admin/quadras" element={<AdminCourts />} />
+        <Route
+          path="/admin/torneios"
+          element={
+            <PrivateRoute>
+              <AdminTournaments />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/torneios"
+          element={
+            <PrivateRoute>
+              <Tournaments />
+            </PrivateRoute>
+          }
+        />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
