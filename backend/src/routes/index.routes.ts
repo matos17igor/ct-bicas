@@ -70,5 +70,8 @@ router.post(
   adminMiddleware,
   tournamentController.createTournament,
 );
+router.get("/tournaments", tournamentController.getAllTournaments);
+router.patch("/tournaments/:id", authMiddleware, adminMiddleware, tournamentController.editTournament);
+router.delete("/tournaments/:id", authMiddleware, adminMiddleware, tournamentController.deleteTournament);
 
 export { router };
