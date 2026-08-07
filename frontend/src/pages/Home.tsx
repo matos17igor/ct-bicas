@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logoCt from "../assets/ct-bicas-removebg-preview.png";
-import backgroundCt from "../assets/ct-background.jpeg";
+import backgroundCt from "../assets/ct-background2.png";
 import professorCt from "../assets/professorct.jpeg";
 import { InstagramEmbed } from 'react-social-media-embed';
 
 export function Home() {
   const navigate = useNavigate();
+
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="bg-ct-dark min-h-screen text-ct-text font-sans overflow-x-hidden">
@@ -26,17 +29,45 @@ export function Home() {
             <a href="#contato" className="hover:text-ct-gold transition-colors">Contato</a>
           </nav>
 
-          <button 
-            onClick={() => navigate("/login")}
-            className="px-6 py-2.5 bg-ct-gold hover:bg-ct-gold-hover text-ct-dark font-black rounded-xl transition-all shadow-lg shadow-ct-gold/20 cursor-pointer"
-          >
-            Agendar Horário
-          </button>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => navigate("/login")}
+              className="hidden sm:block px-6 py-2.5 bg-ct-gold hover:bg-ct-gold-hover text-ct-dark font-black rounded-xl transition-all shadow-lg shadow-ct-gold/20 cursor-pointer"
+            >
+              Agendar Horário
+            </button>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden text-ct-text p-2 cursor-pointer"
+              aria-label="Menu"
+            >
+              {menuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile dropdown menu */}
+        {menuOpen && (
+          <div className="md:hidden bg-ct-dark border-t border-slate-800 px-6 py-4 flex flex-col gap-3 animate-fade-in">
+            <a href="#esportes" onClick={() => setMenuOpen(false)} className="text-slate-300 font-semibold py-2 hover:text-ct-gold transition-colors">Esportes</a>
+            <a href="#aula-experimental" onClick={() => setMenuOpen(false)} className="text-slate-300 font-semibold py-2 hover:text-ct-gold transition-colors">Aula experimental</a>
+            <a href="#contato" onClick={() => setMenuOpen(false)} className="text-slate-300 font-semibold py-2 hover:text-ct-gold transition-colors">Contato</a>
+            <button 
+              onClick={() => { navigate("/login"); setMenuOpen(false); }}
+              className="w-full py-3 bg-ct-gold hover:bg-ct-gold-hover text-ct-dark font-black rounded-xl transition-all cursor-pointer mt-2"
+            >
+              Agendar Horário
+            </button>
+          </div>
+        )}
       </header>
 
       {/* 2. HERO SECTION */}
-      <section className="relative pt-32 pb-24 md:pt-48 md:pb-40 px-6 min-h-[90vh] flex items-center">
+      <section className="relative pt-32 pb-24 md:pt-48 md:pb-40 px-6 min-h-[100vh] flex items-center">
         {/* Background Image Fix */}
         <div className="absolute inset-0 z-0">
           <img src={backgroundCt} alt="Background da Arena" className="w-full h-full object-cover" />

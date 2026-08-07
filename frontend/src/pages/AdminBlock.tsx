@@ -137,7 +137,7 @@ export function AdminBlock() {
   }
 
   return (
-    <div className="flex min-h-screen bg-ct-dark text-ct-text">
+    <div className="flex min-h-screen bg-ct-dark text-ct-text pt-14 md:pt-0">
       <AdminSidebar />
 
       <main className="flex-1 p-8 md:p-12 overflow-y-auto">
@@ -306,7 +306,7 @@ export function AdminBlock() {
                   return displaySlots.map((slot) => (
                     <div
                       key={slot.id}
-                      className="bg-ct-card p-5 rounded-2xl border border-slate-700 flex items-center justify-between gap-4"
+                      className="bg-ct-card p-5 rounded-2xl border border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
                     >
                       <div className="flex items-center gap-5">
                         <div className="bg-ct-dark text-ct-gold font-black p-4 rounded-xl border border-ct-gold/20 text-center min-w-[90px]">
